@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UberEats vs DoorDash — Usability Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b1220;
+  --bg2: #0f172a;
+  --card: #111c2f;
+  --border: rgba(255,255,255,0.10);
+  --uber: #06c167;
+  --dash: #ff3008;
+  --gold: #f5c842;
+  --text: #f1f5f9;
+  --muted: #cbd5e1;
+  --muted2: #94a3b8;
+  --accent: #8b5cf6;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --radius: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: radial-gradient(1200px 700px at 70% -10%, rgba(139,92,246,0.18), transparent 55%), var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.75;
+  font-size: 17px;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+/* NOISE OVERLAY */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.28;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  padding: 80px 8vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 900px; height: 900px;
+  background: radial-gradient(circle, rgba(124,106,245,0.08) 0%, transparent 70%);
+  top: -200px; right: -200px;
+  pointer-events: none;
+}
+
+.hero-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 2px;
+  margin-bottom: 40px;
+  display: inline-block;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(48px, 8vw, 110px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -2px;
+  margin-bottom: 40px;
+}
+
+.hero h1 .line1 { display: block; }
+.hero h1 .vs {
+  font-size: 0.45em;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: -1px;
+  display: inline-block;
+  margin: 0 16px;
+  vertical-align: middle;
+}
+.hero h1 .uber { color: var(--uber); }
+.hero h1 .dash { color: var(--dash); }
+
+.hero-subtitle {
+  font-size: 19px;
+  color: var(--muted2);
+  max-width: 600px;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 60px;
+}
+
+.hero-meta {
+  display: flex; gap: 48px; flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.meta-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.meta-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px; left: 8vw;
+  display: flex; align-items: center; gap: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.scroll-line {
+  width: 40px; height: 1px;
+  background: var(--border);
+  position: relative; overflow: hidden;
+}
+
+.scroll-line::after {
+  content: '';
+  position: absolute; inset-y: 0; left: -100%;
+  width: 100%; background: var(--accent);
+  animation: slide 2s ease-in-out infinite;
+}
+
+@keyframes slide { 0%,100%{left:-100%} 50%{left:100%} }
+
+/* SECTION STRUCTURE */
+section {
+  padding: 100px 8vw;
+  position: relative;
+  z-index: 1;
+}
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 24px;
+}
+
+h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+p { color: var(--muted); font-weight: 400; font-size: 17px; line-height: 1.85; }
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 8vw;
+}
+
+/* PROBLEM SECTION */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.problem-card {
+  background: var(--card);
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.problem-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 3px;
+}
+
+.problem-card.uber::before { background: var(--uber); }
+.problem-card.dash::before { background: var(--dash); }
+.problem-card.neutral::before { background: var(--accent); }
+.problem-card.full { grid-column: 1/-1; }
+
+.problem-card .number {
+  font-family: 'Syne', sans-serif;
+  font-size: 80px;
+  font-weight: 800;
+  opacity: 0.06;
+  position: absolute;
+  top: -10px; right: 20px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* QUOTE BLOCK */
+.quote-block {
+  border-left: 3px solid var(--accent);
+  padding: 24px 32px;
+  background: rgba(124,106,245,0.05);
+  margin: 40px 0;
+  position: relative;
+}
+
+.quote-block::before {
+  content: '"';
+  font-family: 'Syne', sans-serif;
+  font-size: 120px;
+  color: var(--accent);
+  opacity: 0.15;
+  position: absolute;
+  top: -20px; left: 16px;
+  line-height: 1;
+}
+
+.quote-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  font-style: italic;
+  color: var(--text);
+  font-weight: 300;
+  position: relative; z-index: 1;
+  margin-bottom: 12px;
+}
+
+.quote-attr {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* METHODOLOGY TIMELINE */
+.timeline {
+  position: relative;
+  margin-top: 60px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+
+.timeline-item {
+  padding: 0 0 60px 48px;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -4px; top: 6px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 16px rgba(124,106,245,0.6);
+}
+
+.timeline-step {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+/* TASKS GRID */
+.tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2px;
+  margin-top: 40px;
+}
+
+.task-card {
+  background: var(--card);
+  padding: 28px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.task-card:hover { background: #1a1a26; }
+
+.task-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.task-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.task-metric {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* SUS COMPARISON */
+.sus-section { background: var(--bg2); }
+
+.sus-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.sus-card {
+  background: var(--card);
+  padding: 40px;
+  border: 1px solid var(--border);
+}
+
+.sus-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.sus-app {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.sus-score-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 2px;
+}
+
+.uber .sus-score-badge { background: rgba(6,193,103,0.15); color: var(--uber); }
+.dash .sus-score-badge { background: rgba(255,48,8,0.15); color: var(--dash); }
+
+.sus-bars { display: flex; flex-direction: column; gap: 16px; }
+
+.sus-bar-row {}
+
+.sus-bar-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex; justify-content: space-between;
+}
+
+.sus-bar-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sus-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s ease;
+}
+
+.uber .sus-bar-fill { background: var(--uber); }
+.dash .sus-bar-fill { background: var(--dash); }
+
+/* PARTICIPANTS */
+.participants-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  margin-top: 40px;
+}
+
+.participant-card {
+  background: var(--card);
+  padding: 28px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.p-id {
+  font-family: 'Space Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.p-demo {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.p-scores {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+
+.p-score {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+
+.p-score.u { background: rgba(6,193,103,0.1); color: var(--uber); }
+.p-score.d { background: rgba(255,48,8,0.1); color: var(--dash); }
+
+.p-tag {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-top: 10px;
+}
+
+/* FINDINGS */
+.findings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.finding-card {
+  background: var(--card);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.finding-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.finding-winner {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.finding-winner.uber { color: var(--uber); }
+.finding-winner.dash { color: var(--dash); }
+.finding-winner.tie { color: var(--gold); }
+
+.finding-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.finding-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* BATTLE SECTION */
+.battle-section {
+  background: var(--bg2);
+}
+
+.battle-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 60px;
+}
+
+.battle-table th {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 16px 24px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.battle-table th:nth-child(2) { color: var(--uber); }
+.battle-table th:nth-child(3) { color: var(--dash); }
+
+.battle-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 14px;
+  color: var(--muted);
+  vertical-align: middle;
+}
+
+.battle-table td:first-child {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.battle-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.win { color: #fff !important; font-weight: 500; }
+.lose { color: #444 !important; }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.badge.w { background: rgba(6,193,103,0.15); color: var(--uber); }
+.badge.l { background: rgba(255,255,255,0.05); color: var(--muted); }
+.badge.d { background: rgba(255,48,8,0.15); color: var(--dash); }
+.badge.t { background: rgba(245,200,66,0.15); color: var(--gold); }
+
+/* INSIGHT BOX */
+.insight-box {
+  background: linear-gradient(135deg, rgba(124,106,245,0.08), rgba(124,106,245,0.02));
+  border: 1px solid rgba(124,106,245,0.2);
+  padding: 48px;
+  margin: 60px 0;
+}
+
+.insight-header {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.insight-text {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+/* RECOMMENDATIONS */
+.rec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.rec-column h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.rec-column.uber-col h3 { color: var(--uber); border-color: rgba(6,193,103,0.3); }
+.rec-column.dash-col h3 { color: var(--dash); border-color: rgba(255,48,8,0.3); }
+
+.rec-item {
+  display: flex; gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+
+.rec-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rec-text {
+  font-size: 14px;
+  color: #9090aa;
+  line-height: 1.6;
+}
+
+.rec-text strong {
+  color: var(--text);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+
+/* CLOSING */
+.closing {
+  background: var(--bg);
+  text-align: center;
+  padding: 120px 8vw;
+}
+
+.closing-big {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -3px;
+  margin-bottom: 32px;
+}
+
+.closing-big em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.researcher-card {
+  display: inline-block;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 32px 48px;
+  margin-top: 60px;
+  text-align: left;
+}
+
+.researcher-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.researcher-role {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* STICKY NAV */
+.sticky-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,10,15,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 8vw;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.sticky-nav.visible { transform: translateY(0); }
+
+.nav-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex; gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+/* HIGHLIGHT TEXT */
+.hl-uber { color: var(--uber); }
+.hl-dash { color: var(--dash); }
+.hl-acc { color: var(--accent); }
+.hl-gold { color: var(--gold); }
+
+/* STAT BURST */
+.stat-burst {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin: 60px 0;
+}
+
+.stat-item {
+  background: var(--card);
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.stat-number {
+  font-family: 'Syne', sans-serif;
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -3px;
+  margin-bottom: 8px;
+}
+
+.stat-desc {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* DIFFERENTIATOR SECTION */
+.diff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.diff-card {
+  border: 1px solid var(--border);
+  padding: 32px;
+  position: relative;
+}
+
+.diff-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+.diff-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.diff-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* LINKS */
+a { color: var(--text); }
+a:hover { color: #ffffff; }
+
+/* CARD POLISH */
+.problem-card, .task-card, .sus-card, .participant-card, .finding-card,
+.insight-box, .researcher-card, .diff-card, .stat-item {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.task-card, .participant-card, .finding-card, .problem-card { border: 1px solid var(--border); }
+
+/* ANIMATIONS */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .problem-grid, .sus-grid, .findings-grid,
+  .rec-grid, .stat-burst { grid-template-columns: 1fr; }
+  .participants-row { grid-template-columns: repeat(3,1fr); }
+  .diff-grid { grid-template-columns: 1fr; }
+  .hero h1 { letter-spacing: -1px; }
+}
+
+/* --- Readability + Themes --- */
+:root{
+  --bg: #0b1220;
+  --bg2:#0f172a;
+  --card:#111c2f;
+  --border: rgba(255,255,255,0.10);
+  --text:#eef3ff;
+  --muted: rgba(238,243,255,0.72);
+  --muted2: rgba(238,243,255,0.58);
+  --accent:#7dd3fc;
+  --shadow: 0 10px 30px rgba(0,0,0,0.30);
+  --navW: 0px;
+  --fontBody: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  --fontDisplay: "Syne", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  --fontMono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+html[data-theme="light"]{
+  --bg:#ffffff;
+  --bg2:#f6f7fb;
+  --card:#ffffff;
+  --border: rgba(17,17,17,0.12);
+  --text:#111827;
+  --muted: rgba(17,24,39,0.70);
+  --muted2: rgba(17,24,39,0.58);
+  --accent:#2563eb;
+  --shadow: 0 10px 30px rgba(17,24,39,0.10);
+}
+body{font-family:var(--fontBody); color:var(--text); background: radial-gradient(1200px 700px at 80% -10%, rgba(125,211,252,0.12), transparent 55%), linear-gradient(180deg, var(--bg), var(--bg2));}
+h1,h2,h3{font-family:var(--fontDisplay);}
+code, pre, .mono{font-family:var(--fontMono);}
+main{margin-left: 0;}
+
+/* --- Compass nav --- */
+
+main{margin-left: 0;} 
+
+.theme-toggle{position: fixed; right: 18px; top: 16px; z-index: 60; border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 75%, transparent); color: var(--text); padding: 10px 12px; border-radius: 999px; box-shadow: var(--shadow); font-size: 13px; cursor: pointer;}
+.theme-toggle:focus{outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent); outline-offset: 3px;}
+
+.scope-note{margin: 18px 0 0; padding: 14px; border-radius: 16px; border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 78%, transparent); color: var(--muted); line-height: 1.5;}
+.scope-note strong{color: var(--text);} 
+.micro-note{margin: 14px 0 0; color: var(--muted); line-height: 1.55;}
+
+@media (max-width: 980px){:root{ --navW: 0px; } 
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">Theme</button>
+<main>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="nav-title">Uber Eats <span class="hl-muted">vs</span> DoorDash</div>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#methodology">Methods</a></li>
+    <li><a href="#findings">Findings</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="#recs">Recs</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-tag">Portfolio Case Study — HCI Research</div>
+  <h1>
+    <span class="line1">
+      <span class="uber">Uber Eats</span>
+      <span class="vs">vs</span>
+      <span class="dash">DoorDash</span>
+    </span>
+    <span class="line1" style="color:var(--text);">Who wins</span>
+    <span class="line1" style="color:var(--text);">the UX war?</span>
+  </h1>
+  <p class="hero-subtitle">A rigorous mixed-method comparative usability study that goes beyond preferences — measuring where design decisions actually fail users in the wild.</p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Researcher</span>
+      <span class="meta-value">Prasanna Lakshmi Guduru</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Institution</span>
+      <span class="meta-value">SUNY Oswego — M.S. HCI</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Participants</span>
+      <span class="meta-value">6 users · 15 tasks each</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Methods</span>
+      <span class="meta-value">Think-Aloud · SUS · Thematic Analysis</span>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>scroll to explore</span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROBLEM STATEMENT -->
+<section id="problem">
+  <div class="section-label">01 — The Problem</div>
+  <h2>Two apps,<br>one experience<br><em style="color:var(--muted); font-style:italic;">broken differently.</em></h2>
+
+  <div class="stat-burst fade-up">
+    <div class="stat-item">
+      <div class="stat-number hl-uber">15</div>
+      <div class="stat-desc">Tasks Designed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent)">6</div>
+      <div class="stat-desc">Real Users Tested</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number hl-dash">70</div>
+      <div class="stat-desc">Avg Uber SUS Score</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number hl-gold">80</div>
+      <div class="stat-desc">Avg DoorDash SUS Score</div>
+    </div>
+  </div>
+
+  <div class="problem-grid fade-up">
+    <div class="problem-card neutral full">
+      <div class="number">01</div>
+      <div class="section-label" style="margin-bottom:12px;">The Research Gap</div>
+      <h3 style="font-size:24px; letter-spacing:-1px;">Most studies evaluate apps in isolation. This one puts them head-to-head.</h3>
+      <p style="margin-top:12px; max-width:700px;">Food delivery platforms serve millions of users daily, yet there is limited structured, side-by-side comparative usability research evaluating them under identical conditions. I identified an opportunity to design a controlled study where the same 15 standardized tasks were executed by the same participants across both platforms. By holding variables constant, I allowed the data — not assumptions — to reveal the differences.</p>
+    </div>
+    <div class="problem-card uber">
+      <div class="number">🟢</div>
+      <h3 class="hl-uber">Uber Eats</h3>
+      <p style="margin-top:12px;">Larger ecosystem. Promotes well. Clean layout. But the search function? A glaring blind spot that users discovered in real-time.</p>
+    </div>
+    <div class="problem-card dash">
+      <div class="number">🔴</div>
+      <h3 class="hl-dash">DoorDash</h3>
+      <p style="margin-top:12px;">Superior search accuracy and category organization. But cart management and promotional clarity consistently frustrated participants.</p>
+    </div>
+  </div>
+
+  <div class="quote-block fade-up">
+    <p class="quote-text">Despite being such a huge delivery service app, it failed at something as simple as search. I searched 'Indian' and it showed me nothing related. I'd rate Uber Eats a 1 out of 5 for search.</p>
+    <div class="quote-attr">— Participant P4, 45M · Analytical user, search-reliant</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- METHODOLOGY -->
+<section id="methodology">
+  <div class="section-label">02 — The Methodology</div>
+  <h2>Designed to<br>eliminate bias,<br>surface truth.</h2>
+  <p style="max-width:600px; margin-top:16px;">I did not simply conduct usability sessions; I deliberately architected a study framework designed to be both scientifically valid and practically revealing. Every methodological decision — from task design to participant selection — was structured to reduce bias, ensure consistency, and produce measurable, comparable outcomes across platforms.</p>
+
+  <div class="diff-grid fade-up" style="margin-top:60px;">
+    <div class="diff-card">
+      <div class="diff-label">Design Choice</div>
+      <div class="diff-title">Within-Subject Design</div>
+      <p style="font-size:14px;">Every participant tested <em>both</em> apps. This eliminates performance variability between individuals — the same person, same conditions, two platforms. Direct comparison.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Design Choice</div>
+      <div class="diff-title">Randomized Task Order</div>
+      <p style="font-size:14px;">Which app comes first was randomized per participant. This controls for learning effects — you can't credit familiarity for speed improvements.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Design Choice</div>
+      <div class="diff-title">Mixed Methods</div>
+      <p style="font-size:14px;">Quantitative (SUS, task time, error rate) + Qualitative (think-aloud, observational notes, post-task interview). Numbers tell what. Stories tell why.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Design Choice</div>
+      <div class="diff-title">Local Context</div>
+      <p style="font-size:14px;">All participants from Syracuse, NY. National studies mask local behavior — here, limited cuisine availability in mid-size cities directly affects satisfaction and search.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Design Choice</div>
+      <div class="diff-title">IRB-Approved Ethics</div>
+      <p style="font-size:14px;">Full IRB protocol. Anonymous participant IDs (P1–P6). No payment flows completed. Zero deception. Data stored password-protected, deleted after 6 months.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Design Choice</div>
+      <div class="diff-title">Think-Aloud Protocol</div>
+      <p style="font-size:14px;">Participants verbalized every thought in real time. This surfaces cognitive friction that metrics alone can't capture — hesitation, second-guessing, confusion.</p>
+    </div>
+  </div>
+
+  <div class="timeline fade-up">
+    <div class="section-label" style="margin-bottom:40px; margin-top:60px;">Study Flow</div>
+
+    <div class="timeline-item">
+      <div class="timeline-step">Step 01</div>
+      <h3>Recruitment & Screening</h3>
+      <p>16-question screener to filter participants: 18+, food delivery app users within past 6 months, residents of Syracuse NY, comfortable with technology. Gender-balanced 50/50. Age range 23–52.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-step">Step 02</div>
+      <h3>Informed Consent</h3>
+      <p>Full IRB-compliant consent process. Participants briefed on purpose, recording, anonymity, and voluntary withdrawal rights. Sessions conducted over Zoom with screen-share.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-step">Step 03</div>
+      <h3>15 Standardized Tasks</h3>
+      <p>Moderator read verbatim scripts. No guidance unless explicitly asked (recorded as error). Tasks spanned onboarding, search, navigation, cart modification, promotions, reordering, and icon recognition.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-step">Step 04</div>
+      <h3>Post-Task SUS + Interview</h3>
+      <p>10-item System Usability Scale (Brooke, 1986) on a 3-point Likert scale per app. Followed by 10-question semi-structured interview probing satisfaction, pain points, visual design, and preference.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-step">Step 05</div>
+      <h3>Triangulated Analysis</h3>
+      <p>Quantitative: descriptive statistics on task time, success rate, error rate. Qualitative: content analysis + thematic coding of think-aloud transcripts and interview responses. Narrative analysis of individual user journeys.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-step">Step 06</div>
+      <h3>Debriefing</h3>
+      <p>Every participant received a formal debriefing document explaining study goals and confirming data protection. Researcher contact provided for any post-session questions.</p>
+    </div>
+  </div>
+
+  <div class="insight-box fade-up">
+    <div class="insight-header">Researcher Thinking</div>
+    <p class="insight-text">The task script was read verbatim — not summarized, not paraphrased. This deliberate constraint ensures the moderator's tone doesn't prime the participant toward success or frustration. Consistency is validity.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PARTICIPANTS -->
+<section id="sec-six-people-real-users-real-friction">
+  <div class="section-label">03 — The Participants</div>
+  <h2>Six people.<br>Real users.<br>Real friction.</h2>
+
+  <div class="scope-note fade-up"><strong>Study scope note:</strong> These results are based on <strong>15 standardized tasks</strong> completed by <strong>6 participants</strong> in the <strong>Syracuse, NY</strong> area. Outcomes can vary by location (e.g., store availability, delivery density, and regional performance). In addition, <strong>3 of the 15 tasks</strong> were search-focused; changing the number or weighting of search tasks could influence performance metrics and SUS outcomes. Findings should be interpreted within this defined scope.</div>
+
+  <div class="participants-row fade-up">
+    <div class="participant-card">
+      <div class="p-id">P1</div>
+      <div class="p-demo">23F</div>
+      <div class="p-scores">
+        <span class="p-score u">UE 70</span>
+        <span class="p-score d">DD 80</span>
+      </div>
+      <p class="p-tag">Fast, minimal exploration, values simplicity</p>
+    </div>
+    <div class="participant-card">
+      <div class="p-id">P2</div>
+      <div class="p-demo">33M</div>
+      <div class="p-scores">
+        <span class="p-score u">UE 72</span>
+        <span class="p-score d">DD 78</span>
+      </div>
+      <p class="p-tag">Analytical, time-saving, deal-focused</p>
+    </div>
+    <div class="participant-card">
+      <div class="p-id">P3</div>
+      <div class="p-demo">27F</div>
+      <div class="p-scores">
+        <span class="p-score u">UE 75</span>
+        <span class="p-score d">DD 81</span>
+      </div>
+      <p class="p-tag">Detail-oriented, explorative, fastest sessions</p>
+    </div>
+    <div class="participant-card">
+      <div class="p-id">P4</div>
+      <div class="p-demo">45M</div>
+      <div class="p-scores">
+        <span class="p-score u">UE 65</span>
+        <span class="p-score d">DD 80</span>
+      </div>
+      <p class="p-tag">Accuracy-focused, search-reliant</p>
+    </div>
+    <div class="participant-card">
+      <div class="p-id">P5</div>
+      <div class="p-demo">29M</div>
+      <div class="p-scores">
+        <span class="p-score u">UE 68</span>
+        <span class="p-score d">DD 80</span>
+      </div>
+      <p class="p-tag">Lower tech confidence, DoorDash-leaning</p>
+    </div>
+    <div class="participant-card">
+      <div class="p-id">P6</div>
+      <div class="p-demo">52F</div>
+      <div class="p-scores">
+        <span class="p-score u">UE 70</span>
+        <span class="p-score d">DD 82</span>
+      </div>
+      <p class="p-tag">Grocery + alcohol heavy, daily user</p>
+    </div>
+  </div>
+
+  <p style="margin-top:24px; font-size:13px; color:var(--muted); font-family:'Space Mono',monospace;">UE = Uber Eats SUS Score · DD = DoorDash SUS Score · Scale: 0–100</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- TASKS -->
+<section id="sec-15-tasks-every-real-world-scenario-covered">
+  <div class="section-label">04 — Task Architecture</div>
+  <h2>15 tasks.<br>Every real-world<br>scenario covered.</h2>
+
+  <p class="micro-note fade-up">Note: Task mix matters. This study included <strong>three search-related tasks</strong>, which can meaningfully impact overall usability scores.</p>
+
+  <div class="tasks-grid fade-up">
+    <div class="task-card">
+      <div class="task-num">TASK 01</div>
+      <div class="task-title">Account Creation</div>
+      <div class="task-metric">Onboarding clarity</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 02</div>
+      <div class="task-title">Location Permissions</div>
+      <div class="task-metric">Permission UX</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 03</div>
+      <div class="task-title">Home Page Navigation</div>
+      <div class="task-metric">Layout & hierarchy</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 04</div>
+      <div class="task-title">Dish Search</div>
+      <div class="task-metric">Chicken Biryani → search accuracy</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 05</div>
+      <div class="task-title">Restaurant Search</div>
+      <div class="task-metric">Known-item: Chipotle</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 06</div>
+      <div class="task-title">Category Browse</div>
+      <div class="task-metric">Navigation efficiency</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 07</div>
+      <div class="task-title">Add to Cart</div>
+      <div class="task-metric">Cart workflow</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 08</div>
+      <div class="task-title">Modify Cart</div>
+      <div class="task-metric">Quantity + removal</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 09</div>
+      <div class="task-title">Apply Promotions</div>
+      <div class="task-metric">Promo visibility</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 10</div>
+      <div class="task-title">Reorder History</div>
+      <div class="task-metric">Past order access</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 11</div>
+      <div class="task-title">Save Restaurant</div>
+      <div class="task-metric">Favorites flow</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 12</div>
+      <div class="task-title">Locate Saved Restaurants</div>
+      <div class="task-metric">Personal list nav</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 13</div>
+      <div class="task-title">Non-Food Search</div>
+      <div class="task-metric">Toilet paper → cross-category</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 14</div>
+      <div class="task-title">Alcohol Search</div>
+      <div class="task-metric">Category separation</div>
+    </div>
+    <div class="task-card">
+      <div class="task-num">TASK 15</div>
+      <div class="task-title">Icon Recognition</div>
+      <div class="task-metric">Visual comprehension</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SUS SCORES -->
+<section class="sus-section" id="findings">
+  <div class="section-label">05 — SUS Scores Deep Dive</div>
+  <h2>The numbers<br>say DoorDash.<br>The story's complicated.</h2>
+
+  <div class="sus-grid fade-up">
+    <!-- Uber Eats -->
+    <div class="sus-card uber">
+      <div class="sus-header">
+        <div class="sus-app hl-uber">Uber Eats</div>
+        <div class="sus-score-badge">Avg SUS: 70</div>
+      </div>
+      <div class="sus-bars">
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Account Creation / Login</span><span>3.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Easy Navigation</span><span>2.50</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:83%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Permission Confidence</span><span>3.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Promotions Clarity</span><span>2.67</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:89%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Home Page Navigation</span><span>2.50</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:83%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label" style="color:var(--dash)"><span>⚠ Search (Critical Failure)</span><span>1.83</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:61%; background:var(--dash)"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Cart Management</span><span>3.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Reordering</span><span>3.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Customer Support Access</span><span>2.33</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:78%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Visual Elements</span><span>2.50</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:83%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DoorDash -->
+    <div class="sus-card dash">
+      <div class="sus-header">
+        <div class="sus-app hl-dash">DoorDash</div>
+        <div class="sus-score-badge">Avg SUS: 80</div>
+      </div>
+      <div class="sus-bars">
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Account Creation / Login</span><span>3.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Easy Navigation</span><span>2.67</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:89%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Permission Confidence</span><span>3.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label" style="color:var(--uber)"><span>⚠ Promotions (Weak Point)</span><span>2.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:67%; background:var(--uber)"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Home Page Navigation</span><span>2.50</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:83%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Search (Strength)</span><span>3.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label" style="color:var(--uber)"><span>⚠ Cart Management</span><span>2.00</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:67%; background:var(--uber)"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label" style="color:var(--uber)"><span>⚠ Reordering</span><span>2.17</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:72%; background:var(--uber)"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Customer Support Access</span><span>2.17</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:72%"></div></div>
+        </div>
+        <div class="sus-bar-row">
+          <div class="sus-bar-label"><span>Visual Elements</span><span>2.50</span></div>
+          <div class="sus-bar-track"><div class="sus-bar-fill" style="width:83%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box fade-up" style="margin-top:60px;">
+    <div class="insight-header">The Paradox</div>
+    <p class="insight-text">Uber Eats won on promotions, cart management, reordering, icon clarity, and customer support. Yet DoorDash had the higher overall SUS. Why? Because search is a foundational function — and Uber Eats failed it completely. One deep failure can sink a constellation of strengths.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BATTLE TABLE -->
+<section class="battle-section" id="insights">
+  <div class="section-label">06 — Feature Battle</div>
+  <h2>Task by task.<br>Who won,<br>who lost.</h2>
+
+  <table class="battle-table fade-up">
+    <thead>
+      <tr>
+        <th>Feature / Task</th>
+        <th>🟢 Uber Eats</th>
+        <th>🔴 DoorDash</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Account Creation</td>
+        <td class="win">Smooth, fast</td>
+        <td class="win">Smooth, fast</td>
+        <td><span class="badge t">TIE</span></td>
+      </tr>
+      <tr>
+        <td>Promotions Visibility</td>
+        <td class="win">Eye-catching single highlight, clear CTA</td>
+        <td class="lose">Multiple slideable offers, less clear</td>
+        <td><span class="badge w">UBER WINS</span></td>
+      </tr>
+      <tr>
+        <td>Home Page Navigation</td>
+        <td class="win">Intuitive categories, address editing, delivery/pickup toggle</td>
+        <td class="win">Well-organized browse tab, clear icons</td>
+        <td><span class="badge t">TIE</span></td>
+      </tr>
+      <tr>
+        <td>Restaurant Search</td>
+        <td class="lose">Searched "Indian" → showed nothing Indian</td>
+        <td class="win">Accurate results, open/closed clearly labeled</td>
+        <td><span class="badge d">DOORDASH WINS</span></td>
+      </tr>
+      <tr>
+        <td>Dish Search (Pancakes)</td>
+        <td class="lose">Restaurants + convenience stores mixed, no distinction</td>
+        <td class="win">Clear restaurant vs. store separation, dish variants shown</td>
+        <td><span class="badge d">DOORDASH WINS</span></td>
+      </tr>
+      <tr>
+        <td>Non-Food (Toilet Paper)</td>
+        <td class="lose">Open/closed stores unclear, requires extra navigation</td>
+        <td class="win">Blurs closed stores, shows items directly with price/details</td>
+        <td><span class="badge d">DOORDASH WINS</span></td>
+      </tr>
+      <tr>
+        <td>Alcohol Search</td>
+        <td class="win">Alcohol option prominent on homepage</td>
+        <td class="win">Stores listed open first, item details with size + price</td>
+        <td><span class="badge t">TIE (slight DD edge)</span></td>
+      </tr>
+      <tr>
+        <td>Cart Management</td>
+        <td class="win">Simple, intuitive quantity/removal flow</td>
+        <td class="lose">Editing perceived as complicated</td>
+        <td><span class="badge w">UBER WINS</span></td>
+      </tr>
+      <tr>
+        <td>Reorder Previous Orders</td>
+        <td class="win">"Order Again" tab visible on homepage</td>
+        <td class="lose">History access less immediate</td>
+        <td><span class="badge w">UBER WINS</span></td>
+      </tr>
+      <tr>
+        <td>Icon Clarity</td>
+        <td class="win">Icons more recognizable across the board</td>
+        <td class="lose">Some icons confusing</td>
+        <td><span class="badge w">UBER WINS</span></td>
+      </tr>
+      <tr>
+        <td>Customer Support Access</td>
+        <td class="win">Clearer pathways to support</td>
+        <td class="lose">Less obvious</td>
+        <td><span class="badge w">UBER WINS</span></td>
+      </tr>
+      <tr>
+        <td>Visual Trust / Color</td>
+        <td class="win">Green = calm, savings-oriented, trustworthy</td>
+        <td class="lose">Red perceived as "flaky, less trustworthy" (P-quote)</td>
+        <td><span class="badge w">UBER WINS (perception)</span></td>
+      </tr>
+      <tr>
+        <td>Overall SUS Score</td>
+        <td class="lose">70 — "Good" range</td>
+        <td class="win">80 — "Excellent" range</td>
+        <td><span class="badge d">DOORDASH WINS</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="divider"></div>
+
+<!-- KEY FINDINGS -->
+<section id="sec-what-the-data-revealed">
+  <div class="section-label">07 — Key Findings</div>
+  <h2>What the<br>data revealed.</h2>
+
+  <div class="findings-grid fade-up">
+    <div class="finding-card">
+      <div class="finding-icon">🔍</div>
+      <div class="finding-winner dash">DoorDash Wins</div>
+      <div class="finding-title">Search is DoorDash's Superpower</div>
+      <p class="finding-desc">Every participant who searched for cuisine types (Indian, Italian) found DoorDash dramatically more accurate. DoorDash also showed open vs. closed status, relevant dish variants, and linked to direct items from search. Uber Eats showed irrelevant results or nothing at all.</p>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon">🛒</div>
+      <div class="finding-winner uber">Uber Eats Wins</div>
+      <div class="finding-title">Cart & Reorder UX is Uber's Edge</div>
+      <p class="finding-desc">All 6 participants scored Uber Eats 3/3 for cart management. The "Order Again" tab was praised as highly convenient. DoorDash's cart editing was described as "complicated" and required more steps — small friction that accumulates over daily use.</p>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon">📢</div>
+      <div class="finding-winner uber">Uber Eats Wins</div>
+      <div class="finding-title">Promotion Design Matters More Than Quantity</div>
+      <p class="finding-desc">Uber Eats showed ONE highlighted promotion clearly. DoorDash showed many scrollable offers with food images participants found distracting. The research reveals a core UX principle: clarity beats abundance in promotional design.</p>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon">🎨</div>
+      <div class="finding-winner uber">Uber Eats Wins</div>
+      <div class="finding-title">Color Psychology is Undefeated</div>
+      <p class="finding-desc">Unprompted, participants described DoorDash's red as "flaky" and "less trustworthy." Uber Eats' green was associated with savings, calm, and reliability. Color wasn't just aesthetic — it shaped trust and brand perception before a single feature was tested.</p>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon">📦</div>
+      <div class="finding-winner dash">DoorDash Wins</div>
+      <div class="finding-title">Non-Food UX — DoorDash Thinks Like a Marketplace</div>
+      <p class="finding-desc">For toilet paper and grocery searches, DoorDash surfaced the items directly with price and details — no extra store-navigation step needed. Uber Eats forced users into a two-step search (store → search within store). For convenience users, this friction is critical.</p>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon">💡</div>
+      <div class="finding-winner tie">The Paradox</div>
+      <div class="finding-title">More Wins ≠ Higher SUS Score</div>
+      <p class="finding-desc">Uber Eats won more individual feature categories, yet DoorDash scored 10 points higher overall on SUS. The lesson: foundational failures (like search) create disproportionate negative impressions. One critical failure can overwhelm many individual wins.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RECOMMENDATIONS -->
+<section id="recs">
+  <div class="section-label">08 — Design Recommendations</div>
+  <h2>Evidence-based.<br>Actionable.<br>Specific.</h2>
+
+  <div class="rec-grid fade-up">
+    <div class="rec-column uber-col">
+      <h3>🟢 Fix for Uber Eats</h3>
+
+      <div class="rec-item">
+        <span class="rec-num">01</span>
+        <div class="rec-text">
+          <strong>Rebuild the search algorithm — urgently</strong>
+          Searching "Indian" or "Italian" must return relevant restaurants and dishes. The current failure is catastrophic for the core use case. Implement cuisine-tagging and NLP-based menu search. This is P0.
+        </div>
+      </div>
+      <div class="rec-item">
+        <span class="rec-num">02</span>
+        <div class="rec-text">
+          <strong>Distinguish restaurants from convenience stores in search results</strong>
+          Participants were confused when pancake searches returned stores with frozen food. Add visual tags like "Restaurant" vs. "Store" labels directly in search results.
+        </div>
+      </div>
+      <div class="rec-item">
+        <span class="rec-num">03</span>
+        <div class="rec-text">
+          <strong>Make open/closed store status unmissable</strong>
+          DoorDash blurs closed stores. Uber Eats buries the "available next day" text. Apply visual de-emphasis (blur, opacity) on unavailable stores consistently.
+        </div>
+      </div>
+      <div class="rec-item">
+        <span class="rec-num">04</span>
+        <div class="rec-text">
+          <strong>Surface promotion relevance in the "Offers" tab</strong>
+          The bottom nav Offers tab felt unnecessary to users. Either integrate promos contextually at checkout or remove the tab and surface deals within category browsing.
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-column dash-col">
+      <h3>🔴 Fix for DoorDash</h3>
+
+      <div class="rec-item">
+        <span class="rec-num">01</span>
+        <div class="rec-text">
+          <strong>Simplify cart management</strong>
+          Quantity changes and item removal should be achievable in 2 taps or less. Currently requires more steps than Uber Eats. Swipe-to-remove and inline quantity steppers are proven patterns.
+        </div>
+      </div>
+      <div class="rec-item">
+        <span class="rec-num">02</span>
+        <div class="rec-text">
+          <strong>Redesign promotion presentation</strong>
+          Showing many offers simultaneously dilutes attention. Test a single hero promotion with secondary browsable deals, rather than a flat carousel. Reduce food imagery in deal cards — it distracts from the offer.
+        </div>
+      </div>
+      <div class="rec-item">
+        <span class="rec-num">03</span>
+        <div class="rec-text">
+          <strong>Make reordering more visible on the home screen</strong>
+          Previous orders should surface as a prominent section on the homepage, not buried in navigation. "Order again" is a high-frequency use case — give it first-class real estate.
+        </div>
+      </div>
+      <div class="rec-item">
+        <span class="rec-num">04</span>
+        <div class="rec-text">
+          <strong>Simplify profile editing and account settings</strong>
+          Participants found phone number editing in DoorDash "twice as complicated" as Uber Eats. Audit the account settings IA — simplify with a single-screen edit flow.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHAT MAKES THIS DIFFERENT -->
+<section id="sec-not-another-opinion-survey">
+  <div class="section-label">09 — Why This Study Is Different</div>
+  <h2>Not another<br>opinion survey.</h2>
+
+  <div class="diff-grid fade-up" style="margin-top:60px;">
+    <div class="diff-card">
+      <div class="diff-label">Differentiator</div>
+      <div class="diff-title">Verbatim Task Script</div>
+      <p style="font-size:14px;">Most studies improvise task instructions. Here, every word was pre-written and read aloud identically across all 6 sessions. This removes moderator bias from the equation entirely.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Differentiator</div>
+      <div class="diff-title">Local User Context</div>
+      <p style="font-size:14px;">Testing in Syracuse, NY revealed locale-specific issues: Uber Eats' search failures were amplified because Indian cuisine availability in mid-size cities is limited — every missed result mattered more.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Differentiator</div>
+      <div class="diff-title">The SUS Paradox Finding</div>
+      <p style="font-size:14px;">The revelation that Uber Eats won more features but scored 10 SUS points lower is a publishable finding — it demonstrates that weighting of core tasks in user perception doesn't correlate linearly with feature wins.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Differentiator</div>
+      <div class="diff-title">IRB-Level Rigor</div>
+      <p style="font-size:14px;">Full ethical protocol, CITI training completion, anonymized participant IDs, zero deception, informed consent, voluntary withdrawal. This isn't a class exercise — it meets publication standards.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Differentiator</div>
+      <div class="diff-title">Triangulated Methods</div>
+      <p style="font-size:14px;">Three analysis methods running in parallel: content coding of think-aloud transcripts, thematic analysis of interview responses, and narrative analysis of individual journeys. Each validates the others.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Differentiator</div>
+      <div class="diff-title">Real Participants, Real Friction</div>
+      <p style="font-size:14px;">Zero simulated behavior. Every quote, every hesitation, every "I don't understand why" moment was observed live and documented. The data has the texture of real experience.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="section-label">The Takeaway</div>
+  <div class="closing-big">Design is a<br><em>series of bets</em><br>on what users need.</div>
+
+  <p style="max-width:600px; margin:0 auto; font-size:18px; color:var(--muted); font-weight:300; line-height:1.7;">DoorDash bet on search. Uber Eats bet on visual clarity and convenience loops. Both bets paid off — in different ways, for different users. The job of a UX researcher isn't to declare a winner. It's to make the bets more informed.</p>
+
+  <div class="quote-block" style="max-width:700px; margin:60px auto; text-align:left;">
+    <p class="quote-text">The goal wasn't to pick a winner. It was to understand why users feel confident in one place and frustrated in another — and build a bridge between those two experiences.</p>
+    <div class="quote-attr">— Prasanna Lakshmi Guduru, Researcher</div>
+  </div>
+
+  <div class="researcher-card fade-up">
+    <div class="researcher-name">Prasanna Lakshmi Guduru</div>
+    <div class="researcher-role">Graduate Researcher · M.S. Human-Computer Interaction · SUNY Oswego</div>
+    <div style="margin-top:16px; font-family:'Space Mono',monospace; font-size:11px; color:var(--muted);">
+      Advisor: Katherine Morelli · IRB Protocol · CITI Certified
+    </div>
+    <div style="margin-top:8px; font-family:'Space Mono',monospace; font-size:11px; color:var(--accent);">
+      pguduru@oswego.edu
+    </div>
+  </div>
+
+  <div style="margin-top:80px; font-family:'Space Mono',monospace; font-size:10px; color:var(--border); letter-spacing:2px;">
+    COMPARATIVE USABILITY STUDY · UBER EATS VS DOORDASH · 2024–2026
+  </div>
+</section>
+
+<script>
+// STICKY NAV
+const nav = document.getElementById('stickyNav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > window.innerHeight * 0.8) {
+    nav.classList.add('visible');
+  } else {
+    nav.classList.remove('visible');
+  }
+});
+
+// FADE UP ANIMATIONS
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ANIMATE SUS BARS ON ENTER
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.sus-bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => { bar.style.width = w; }, 100);
+      });
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.sus-grid').forEach(el => barObserver.observe(el));
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</main>
+

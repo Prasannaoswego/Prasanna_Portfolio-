@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mile-A-Way — UX Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --warm-white: #FAF8F4;
+    --charcoal: #1C1C1E;
+    --deep: #0F0F10;
+    --rose: #C8706A;
+    --rose-light: #E8A8A3;
+    --blush: #F0D5D0;
+    --sage: #7B9B8A;
+    --ink: #2D2A26;
+    --muted: #8A8580;
+    --gold: #C9A96E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(245,240,232,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700; letter-spacing: 0.04em;
+    color: var(--charcoal);
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--charcoal); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    background: var(--deep);
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 120px 64px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 20% 80%, rgba(200,112,106,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--rose-light); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block; width: 32px; height: 1px;
+    background: var(--rose-light);
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    font-weight: 900; line-height: 0.95;
+    color: #fff;
+    margin-bottom: 32px;
+  }
+  h1 em {
+    font-style: italic; color: var(--rose-light);
+  }
+  .hero-desc {
+    font-size: 1rem; line-height: 1.7; color: rgba(255,255,255,0.55);
+    max-width: 380px; margin-bottom: 48px;
+  }
+  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tag {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 6px 14px; border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.5); border-radius: 100px;
+  }
+  .hero-right {
+    background: var(--blush);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 120px 48px 80px;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute; top: -20%; right: -20%;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,112,106,0.15) 0%, transparent 70%);
+  }
+  .hero-visual {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; gap: 20px; align-items: center;
+  }
+  .device-icon {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose) 0%, #8B3A35 100%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 32px 80px rgba(200,112,106,0.35), 0 0 0 1px rgba(255,255,255,0.1);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 32px 80px rgba(200,112,106,0.35), 0 0 0 1px rgba(255,255,255,0.1); }
+    50% { transform: scale(1.03); box-shadow: 0 40px 100px rgba(200,112,106,0.5), 0 0 0 1px rgba(255,255,255,0.15); }
+  }
+  .device-icon svg { width: 80px; height: 80px; }
+  .hero-stat-row {
+    display: flex; gap: 32px; margin-top: 32px;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 900; color: var(--charcoal);
+    line-height: 1;
+  }
+  .hero-stat .label {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-top: 4px;
+  }
+
+  /* ── SCROLL INDICATOR ── */
+  .scroll-line {
+    position: absolute; bottom: 40px; left: 48px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); z-index: 10;
+  }
+  .scroll-line::after {
+    content: ''; display: block; width: 60px; height: 1px;
+    background: rgba(255,255,255,0.15);
+    animation: extend 2s ease-in-out infinite;
+  }
+  @keyframes extend {
+    0%, 100% { width: 60px; opacity: 0.3; }
+    50% { width: 90px; opacity: 0.7; }
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 120px 0; }
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 48px; }
+
+  .section-eyebrow {
+    font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--rose); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-eyebrow::before {
+    content: ''; display: block; width: 24px; height: 1px; background: var(--rose);
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 900; line-height: 1.1; color: var(--charcoal);
+    margin-bottom: 24px;
+  }
+  h2 em { font-style: italic; color: var(--rose); }
+  .lead {
+    font-size: 1.1rem; line-height: 1.8; color: var(--muted); max-width: 640px;
+  }
+
+  /* ── OVERVIEW ── */
+  .overview { background: var(--warm-white); }
+  .overview-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: start; margin-top: 64px;
+  }
+  .overview-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 700; margin-bottom: 16px;
+  }
+  .overview-text p {
+    font-size: 0.97rem; line-height: 1.85; color: #4A4540; margin-bottom: 20px;
+  }
+  .meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .meta-item {
+    padding: 20px 24px;
+    background: var(--cream);
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .meta-item .meta-label {
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .meta-item .meta-value {
+    font-size: 0.9rem; font-weight: 500; color: var(--charcoal);
+    line-height: 1.5;
+  }
+
+  /* ── PROBLEM ── */
+  .problem { background: var(--deep); color: #fff; }
+  .problem h2 { color: #fff; }
+  .problem h2 em { color: var(--rose-light); }
+  .problem .lead { color: rgba(255,255,255,0.5); }
+  .problem .section-eyebrow { color: var(--rose-light); }
+  .problem .section-eyebrow::before { background: var(--rose-light); }
+
+  .challenge-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-top: 64px;
+  }
+  .challenge-card {
+    padding: 32px 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .challenge-card:hover {
+    background: rgba(255,255,255,0.07); transform: translateY(-4px);
+  }
+  .challenge-card .card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; font-weight: 900; color: rgba(200,112,106,0.25);
+    line-height: 1; margin-bottom: 16px;
+  }
+  .challenge-card h4 {
+    font-size: 1rem; font-weight: 500; color: #fff; margin-bottom: 10px;
+  }
+  .challenge-card p {
+    font-size: 0.87rem; line-height: 1.7; color: rgba(255,255,255,0.45);
+  }
+
+  /* ── PROCESS ── */
+  .process { background: var(--cream); }
+  .process-timeline {
+    position: relative; margin-top: 80px;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .process-timeline::before {
+    content: '';
+    position: absolute; left: 32px; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--rose), transparent);
+  }
+  .process-step {
+    display: grid; grid-template-columns: 80px 1fr; gap: 40px;
+    padding: 40px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .step-num {
+    width: 64px; height: 64px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--warm-white);
+    border: 1px solid rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700; color: var(--rose);
+    position: relative; z-index: 1;
+  }
+  .step-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 700; margin-bottom: 10px;
+  }
+  .step-content p {
+    font-size: 0.93rem; line-height: 1.8; color: var(--muted); max-width: 600px;
+  }
+  .step-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .step-pill {
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 12px; background: var(--blush); color: var(--rose);
+    border-radius: 100px;
+  }
+
+  /* ── RESEARCH ── */
+  .research { background: var(--warm-white); }
+  .insights-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+    margin-top: 64px;
+  }
+  .insight-card {
+    padding: 36px 32px;
+    border-radius: 20px;
+    position: relative; overflow: hidden;
+  }
+  .insight-card:nth-child(1) { background: var(--charcoal); color: #fff; }
+  .insight-card:nth-child(2) { background: var(--blush); }
+  .insight-card:nth-child(3) { background: var(--blush); }
+  .insight-card:nth-child(4) { background: var(--charcoal); color: #fff; }
+  .insight-card .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem; line-height: 0.8; opacity: 0.15;
+    position: absolute; top: 20px; right: 24px;
+    font-weight: 900;
+  }
+  .insight-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; font-weight: 700; margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .insight-card p {
+    font-size: 0.9rem; line-height: 1.75; opacity: 0.7;
+    position: relative; z-index: 1;
+  }
+
+  /* ── SOLUTION ── */
+  .solution { background: var(--cream); }
+  .solution-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center; margin-top: 64px;
+  }
+  .solution-visual {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--charcoal) 0%, var(--deep) 100%);
+    border-radius: 32px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .solution-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 70%, rgba(200,112,106,0.2) 0%, transparent 60%);
+  }
+  .phone-mockup {
+    width: 180px;
+    background: #fff;
+    border-radius: 28px;
+    padding: 16px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    position: relative; z-index: 1;
+  }
+  .phone-screen {
+    background: var(--deep);
+    border-radius: 16px;
+    aspect-ratio: 9/16;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 12px; padding: 20px;
+  }
+  .phone-ring {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 2px solid rgba(200,112,106,0.5);
+    display: flex; align-items: center; justify-content: center;
+    animation: ringpulse 2.5s ease-in-out infinite;
+  }
+  @keyframes ringpulse {
+    0%, 100% { transform: scale(1); border-color: rgba(200,112,106,0.5); }
+    50% { transform: scale(1.08); border-color: rgba(200,112,106,0.9); }
+  }
+  .phone-ring-inner {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--rose);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .phone-ring-inner svg { width: 20px; height: 20px; }
+  .phone-label {
+    font-size: 9px; color: rgba(255,255,255,0.6);
+    letter-spacing: 0.05em; text-align: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .phone-btn {
+    width: 100%; padding: 8px;
+    background: var(--rose); border-radius: 8px;
+    font-size: 8px; color: #fff; text-align: center;
+    font-family: 'DM Sans', sans-serif; letter-spacing: 0.05em;
+  }
+  .feature-list { margin-top: 40px; display: flex; flex-direction: column; gap: 20px; }
+  .feature-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 20px; background: var(--warm-white);
+    border-radius: 14px; border: 1px solid rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature-item:hover { transform: translateX(4px); box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .feature-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: var(--blush); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .feature-item h4 { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; }
+  .feature-item p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── FINDINGS ── */
+  .findings { background: var(--deep); color: #fff; }
+  .findings h2 { color: #fff; }
+  .findings h2 em { color: var(--rose-light); }
+  .findings .lead { color: rgba(255,255,255,0.5); }
+  .findings .section-eyebrow { color: var(--rose-light); }
+  .findings .section-eyebrow::before { background: var(--rose-light); }
+
+  .metrics-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px; overflow: hidden;
+    margin-top: 64px; margin-bottom: 64px;
+  }
+  .metric {
+    padding: 40px 32px;
+    background: var(--deep);
+    text-align: center;
+  }
+  .metric .big {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem; font-weight: 900;
+    color: var(--rose-light); line-height: 1;
+  }
+  .metric .desc {
+    font-size: 0.82rem; color: rgba(255,255,255,0.4);
+    margin-top: 8px; line-height: 1.5; letter-spacing: 0.02em;
+  }
+  .finding-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .finding-item {
+    padding: 28px 24px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+  }
+  .finding-item .finding-label {
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--rose-light); margin-bottom: 12px;
+  }
+  .finding-item p {
+    font-size: 0.9rem; line-height: 1.75; color: rgba(255,255,255,0.5);
+  }
+
+  /* ── LINKS ── */
+  .links-section { background: var(--warm-white); }
+  .links-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-top: 64px;
+  }
+  .link-card {
+    padding: 32px 28px;
+    background: var(--cream);
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.08);
+    text-decoration: none;
+    display: block;
+    transition: transform 0.2s, box-shadow 0.25s;
+  }
+  .link-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+  }
+  .link-card .link-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--blush); display: flex; align-items: center;
+    justify-content: center; font-size: 1.4rem; margin-bottom: 20px;
+  }
+  .link-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;
+    color: var(--charcoal);
+  }
+  .link-card p {
+    font-size: 0.83rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px;
+  }
+  .link-arrow {
+    font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--rose); display: flex; align-items: center; gap: 6px;
+  }
+  .link-arrow::after {
+    content: '→'; font-size: 0.9rem;
+    transition: transform 0.2s;
+  }
+  .link-card:hover .link-arrow::after { transform: translateX(4px); }
+
+  /* ── REFLECTION ── */
+  .reflection { background: var(--cream); }
+  .reflection-inner {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 80px;
+    align-items: start; margin-top: 64px;
+  }
+  .reflection-sticky h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 700;
+  }
+  .reflection-sticky { position: sticky; top: 120px; }
+  .reflection-content { display: flex; flex-direction: column; gap: 32px; }
+  .reflection-block {
+    padding: 32px;
+    background: var(--warm-white);
+    border-radius: 16px;
+    border-left: 3px solid var(--rose);
+  }
+  .reflection-block h4 {
+    font-size: 1rem; font-weight: 500; margin-bottom: 10px;
+  }
+  .reflection-block p {
+    font-size: 0.92rem; color: var(--muted); line-height: 1.8;
+  }
+
+  /* ── TEAM ── */
+  .team { background: var(--charcoal); color: #fff; }
+  .team .section-eyebrow { color: rgba(255,255,255,0.4); }
+  .team .section-eyebrow::before { background: rgba(255,255,255,0.3); }
+  .team h2 { color: #fff; }
+  .team-row { display: flex; gap: 20px; margin-top: 48px; flex-wrap: wrap; }
+  .team-card {
+    flex: 1; min-width: 180px; padding: 28px 24px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; text-align: center;
+  }
+  .team-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700;
+  }
+  .av1 { background: linear-gradient(135deg, var(--rose), #8B3A35); color: #fff; }
+  .av2 { background: linear-gradient(135deg, var(--sage), #4A6B5A); color: #fff; }
+  .av3 { background: linear-gradient(135deg, var(--gold), #8B6A3A); color: #fff; }
+  .team-card h4 { font-size: 0.95rem; font-weight: 500; color: #fff; }
+  .team-card p { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep); color: rgba(255,255,255,0.35);
+    text-align: center; padding: 48px;
+    font-size: 0.82rem; letter-spacing: 0.04em;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  footer span { color: var(--rose); }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: none; }
+  .fade-up:nth-child(2) { transition-delay: 0.1s; }
+  .fade-up:nth-child(3) { transition-delay: 0.2s; }
+  .fade-up:nth-child(4) { transition-delay: 0.3s; }
+  .fade-up:nth-child(5) { transition-delay: 0.4s; }
+  .fade-up:nth-child(6) { transition-delay: 0.5s; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .overview-grid, .solution-layout, .reflection-inner { grid-template-columns: 1fr; gap: 40px; }
+    .challenge-cards, .insights-grid, .finding-grid, .links-row { grid-template-columns: 1fr; }
+    .metrics-row { grid-template-columns: 1fr 1fr; }
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero-left { padding: 100px 32px 60px; }
+    .container { padding: 0 24px; }
+    section { padding: 80px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Mile-A-Way</div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#process">Process</a>
+    <a href="#research">Research</a>
+    <a href="#solution">Solution</a>
+    <a href="#findings">Findings</a>
+    <a href="#links">Prototype</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;">
+  <div class="hero-left">
+    <div class="hero-eyebrow">UX Case Study — HCI 510</div>
+    <h1>Mile-<em>A</em>-<em>Way</em></h1>
+    <p class="hero-desc">A haptic companion app that bridges the emotional distance in long-distance relationships through simulated touch.</p>
+    <div class="hero-tags">
+      <span class="tag">UX Research</span>
+      <span class="tag">Interaction Design</span>
+      <span class="tag">Haptic Technology</span>
+      <span class="tag">Prototyping</span>
+      <span class="tag">Usability Testing</span>
+    </div>
+    <div class="scroll-line">Scroll</div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:32px;">
+        <div class="device-icon">
+          <!-- Haptic wave icon -->
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="16" fill="rgba(255,255,255,0.9)"/>
+            <path d="M40 18 C28 18 18 28 18 40" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M40 62 C52 62 62 52 62 40" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M40 8 C22 8 8 22 8 40" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <path d="M40 72 C58 72 72 58 72 40" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="40" cy="40" r="6" fill="rgba(200,112,106,0.9)"/>
+          </svg>
+        </div>
+        <div class="hero-stat-row">
+          <div class="hero-stat">
+            <div class="num">6</div>
+            <div class="label">Users Tested</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">3</div>
+            <div class="label">Research Phases</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">4</div>
+            <div class="label">Months</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="overview" id="overview">
+  <div class="container">
+    <div class="section-eyebrow">Project Overview</div>
+    <h2>Connecting hearts <em>across</em> distance</h2>
+    <p class="lead">Mile-A-Way is a mobile companion app for a theoretical haptic wearable that transmits real-time touch sensations between users separated by distance.</p>
+    <div class="overview-grid">
+      <div class="overview-text fade-up">
+        <h3>The Vision</h3>
+        <p>While video calls let us see and hear our loved ones, they leave out the most human dimension of connection — touch. Mile-A-Way imagines a world where putting on a haptic wristband or glove and opening the companion app lets you hold hands, share a comforting squeeze, or send a playful tap to someone miles away.</p>
+        <p>Our team designed and tested a companion app prototype that controls touch intensity, patterns, and privacy settings — all while integrating seamlessly into existing communication habits.</p>
+        <h3 style="margin-top:24px;">My Role</h3>
+        <p>Lead UX Researcher and Designer — responsible for user recruitment, interview facilitation, contextual inquiry, affinity mapping, wireframing, and usability testing coordination across all three evaluation phases.</p>
+      </div>
+      <div class="meta-grid fade-up">
+        <div class="meta-item">
+          <div class="meta-label">Course</div>
+          <div class="meta-value">HCI 510 — SUNY Oswego</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Timeline</div>
+          <div class="meta-value">Fall 2024 (4 months)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Team</div>
+          <div class="meta-value">Sriram Venkatassamy<br>Prasanna Lakshmi Guduru<br>Shauna Keating</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Methods</div>
+          <div class="meta-value">Contextual Inquiry<br>Affinity Mapping<br>Heuristic Evaluation<br>Usability Testing</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Tools</div>
+          <div class="meta-value">Figma · Miro · Google Workspace</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Deliverable</div>
+          <div class="meta-value">High-Fidelity Prototype + Full UX Research Report</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="section-eyebrow">The Problem</div>
+    <h2>Long-distance love lacks<br><em>one crucial sense</em></h2>
+    <p class="lead">Technology connects our eyes and ears across the globe — but touch, the most primal form of human bonding, remains out of reach.</p>
+    <div class="challenge-cards">
+      <div class="challenge-card fade-up">
+        <div class="card-num">01</div>
+        <h4>No Physical Intimacy</h4>
+        <p>Video calls and messaging platforms rely entirely on audio and visual cues, making it impossible to replicate the emotional weight of physical touch.</p>
+      </div>
+      <div class="challenge-card fade-up">
+        <div class="card-num">02</div>
+        <h4>Limited Emotional Expression</h4>
+        <p>Subtle emotional nuances — a comforting hand on a shoulder, a reassuring squeeze — are impossible to communicate through existing digital channels.</p>
+      </div>
+      <div class="challenge-card fade-up">
+        <div class="card-num">03</div>
+        <h4>Social Isolation</h4>
+        <p>Long-distance relationships frequently produce feelings of loneliness and disconnection, even when communication is frequent and high-quality.</p>
+      </div>
+      <div class="challenge-card fade-up">
+        <div class="card-num">04</div>
+        <h4>Therapeutic Limitations</h4>
+        <p>Therapy modalities that leverage physical presence and touch-based interventions face hard limits in remote settings.</p>
+      </div>
+      <div class="challenge-card fade-up">
+        <div class="card-num">05</div>
+        <h4>Accessibility Gaps</h4>
+        <p>Users who are deaf, non-verbal, or have other communication differences often find voice and text-first tools inadequate for nuanced emotional expression.</p>
+      </div>
+      <div class="challenge-card fade-up">
+        <div class="card-num">06</div>
+        <h4>Language Barriers</h4>
+        <p>Cross-cultural, multilingual couples lose emotional nuance in translation. Touch is a universal language that transcends linguistic barriers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="container">
+    <div class="section-eyebrow">Design Process</div>
+    <h2>From empathy to <em>prototype</em></h2>
+    <p class="lead">We followed a rigorous user-centered design process, anchored in real user voices at every stage — not assumptions.</p>
+    <div class="process-timeline">
+      <div class="process-step">
+        <div class="step-num">1</div>
+        <div class="step-content fade-up">
+          <h3>Discovery & Contextual Inquiry</h3>
+          <p>We conducted one-on-one interviews and contextual inquiry sessions with long-distance couples and individuals in relevant demographics. We observed real communication behaviors — video calls, messaging, and current workarounds — to identify needs, frustrations, and desires.</p>
+          <div class="step-pills">
+            <span class="step-pill">User Interviews</span>
+            <span class="step-pill">Observation Logs</span>
+            <span class="step-pill">Think-Aloud Protocol</span>
+          </div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">2</div>
+        <div class="step-content fade-up">
+          <h3>Synthesis & Affinity Mapping</h3>
+          <p>Interview recordings were transcribed and key insights were captured on a Miro board. We used affinity mapping to group themes, surface patterns, and derive clear user needs that would guide design decisions — moving from individual data points to actionable insights.</p>
+          <div class="step-pills">
+            <span class="step-pill">Affinity Diagram</span>
+            <span class="step-pill">User Personas</span>
+            <span class="step-pill">Storyboards</span>
+          </div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">3</div>
+        <div class="step-content fade-up">
+          <h3>Wireframing & Heuristic Evaluation</h3>
+          <p>We created low-fidelity wireframes to explore the app structure, then evaluated them against Norman's 7 Principles and established usability heuristics. This formative evaluation revealed critical improvements needed before advancing to high-fidelity design.</p>
+          <div class="step-pills">
+            <span class="step-pill">Low-fi Wireframes</span>
+            <span class="step-pill">Heuristic Evaluation</span>
+            <span class="step-pill">Cognitive Walkthrough</span>
+          </div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">4</div>
+        <div class="step-content fade-up">
+          <h3>High-Fidelity Prototyping</h3>
+          <p>Informed by evaluation feedback, we designed a high-fidelity Figma prototype covering core user flows: device pairing, touch customization, permission management, and the live haptic session interface — prioritizing clarity, warmth, and ease of use.</p>
+          <div class="step-pills">
+            <span class="step-pill">Hi-Fi Prototype</span>
+            <span class="step-pill">Figma</span>
+            <span class="step-pill">Design System</span>
+          </div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">5</div>
+        <div class="step-content fade-up">
+          <h3>Usability Testing & Summative Evaluation</h3>
+          <p>We recruited and tested the prototype with participants, collecting both task-completion data and qualitative feedback. Findings were analyzed to identify remaining friction points and inform a future iteration roadmap.</p>
+          <div class="step-pills">
+            <span class="step-pill">Usability Testing</span>
+            <span class="step-pill">Task Analysis</span>
+            <span class="step-pill">Summative Eval</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH INSIGHTS -->
+<section class="research" id="research">
+  <div class="container">
+    <div class="section-eyebrow">Key Research Insights</div>
+    <h2>What users <em>actually</em> want</h2>
+    <p class="lead">Six hours of interviews and contextual inquiry sessions surfaced four definitive themes that shaped every design decision we made.</p>
+    <div class="insights-grid">
+      <div class="insight-card fade-up">
+        <div class="quote-mark">"</div>
+        <h4>Emotional Nuance Over Physical Recreation</h4>
+        <p>Users consistently emphasized emotional connection over literal touch replication. The ability to express feelings — not simulate physics — was the deeper desire. Conventional bonding methods were less important than meaningful, emotional signal.</p>
+      </div>
+      <div class="insight-card fade-up">
+        <div class="quote-mark">"</div>
+        <h4>Personal Customization is Non-Negotiable</h4>
+        <p>Every user expressed a strong desire to define their own touch vocabulary — custom patterns, intensity settings, and rhythm preferences. No two relationships communicate the same way, and the app needed to reflect that.</p>
+      </div>
+      <div class="insight-card fade-up">
+        <div class="quote-mark">"</div>
+        <h4>Privacy is a First-Class Feature</h4>
+        <p>Across every participant, privacy and control were paramount. Users needed to control who can initiate touch, what types of touch are permitted, and how their interaction data is used and stored. Trust must be earned before intimacy is shared.</p>
+      </div>
+      <div class="insight-card fade-up">
+        <div class="quote-mark">"</div>
+        <h4>Seamless Platform Integration</h4>
+        <p>Users didn't want yet another standalone app. The haptic experience needed to integrate naturally into existing video calls and messaging workflows — meeting them where they already were, not asking them to change their habits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution" id="solution">
+  <div class="container">
+    <div class="section-eyebrow">The Solution</div>
+    <h2>Mile-A-Way: <em>touch</em>, redesigned</h2>
+    <div class="solution-layout">
+      <div class="solution-visual">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div style="width:100%;text-align:center; margin-bottom:4px;">
+              <div style="font-size:7px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;font-family:'DM Sans',sans-serif;">MILE-A-WAY</div>
+            </div>
+            <div style="width:48px;height:48px;border-radius:50%;background:rgba(200,112,106,0.15);display:flex;align-items:center;justify-content:center;border:1px solid rgba(200,112,106,0.3);margin-bottom:4px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(200,112,106,0.8);"></div>
+            </div>
+            <div class="phone-label">Connected to Sarah</div>
+            <div class="phone-ring" style="margin:6px 0;">
+              <div class="phone-ring-inner">
+                <svg viewBox="0 0 20 20" fill="white"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3z" opacity="0.3"/><path d="M10 6a4 4 0 100 8 4 4 0 000-8z" opacity="0.5"/><circle cx="10" cy="10" r="2" fill="white"/></svg>
+              </div>
+            </div>
+            <div class="phone-label">Tap to send a touch ✦</div>
+            <div style="width:100%;padding:0 8px;margin-top:6px;">
+              <div class="phone-btn">Send Warm Squeeze</div>
+            </div>
+            <div style="width:100%;padding:0 8px;margin-top:4px;">
+              <div class="phone-btn" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);">Customize Touch</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:1rem;line-height:1.85;color:#4A4540;margin-bottom:32px;">Mile-A-Way transforms the companion app into an emotional communication layer — pairing with haptic wristbands or gloves, translating taps and gestures into real-time physical sensations, and wrapping everything in a privacy-first permissions system.</p>
+        <div class="feature-list">
+          <div class="feature-item fade-up">
+            <div class="feature-icon">🤝</div>
+            <div>
+              <h4>Real-Time Haptic Transmission</h4>
+              <p>Touch gestures are captured by the wearable device and transmitted over the connection, letting partners feel each other's touch in milliseconds.</p>
+            </div>
+          </div>
+          <div class="feature-item fade-up">
+            <div class="feature-icon">🎛️</div>
+            <div>
+              <h4>Custom Touch Vocabulary</h4>
+              <p>Users define personal touch patterns — intensity, duration, rhythm — creating a unique haptic language for each relationship.</p>
+            </div>
+          </div>
+          <div class="feature-item fade-up">
+            <div class="feature-icon">🔒</div>
+            <div>
+              <h4>Granular Privacy Controls</h4>
+              <p>A clear permissions system lets users control who can initiate touch, which touch types are acceptable, and all data handling preferences.</p>
+            </div>
+          </div>
+          <div class="feature-item fade-up">
+            <div class="feature-icon">🔗</div>
+            <div>
+              <h4>Platform Integration</h4>
+              <p>Designed to layer on top of existing video calls and messaging — no new communication habit required.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINDINGS -->
+<section class="findings" id="findings">
+  <div class="container">
+    <div class="section-eyebrow">Evaluation Findings</div>
+    <h2>Testing revealed what <em>mattered most</em></h2>
+    <p class="lead">Three rounds of evaluation — formative, heuristic, and summative — generated concrete findings that shaped every iteration of the design.</p>
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="big">3</div>
+        <div class="desc">Evaluation Rounds Completed</div>
+      </div>
+      <div class="metric">
+        <div class="big">6+</div>
+        <div class="desc">Participants in Usability Testing</div>
+      </div>
+      <div class="metric">
+        <div class="big">7</div>
+        <div class="desc">Norman's Principles Applied</div>
+      </div>
+      <div class="metric">
+        <div class="big">4</div>
+        <div class="desc">Core Requirements Validated</div>
+      </div>
+    </div>
+    <div class="finding-grid">
+      <div class="finding-item fade-up">
+        <div class="finding-label">Heuristic Evaluation</div>
+        <p>Form fields lacked proper labels; carousels created accessibility issues. Touch controls needed consolidation — 3 clear, well-labeled options outperform many confusing ones.</p>
+      </div>
+      <div class="finding-item fade-up">
+        <div class="finding-label">Formative Testing</div>
+        <p>Onboarding screens were flagged as redundant. The "Welcome to Mile-A-Way" screen provided more value than standalone onboarding flows — users wanted to get to the experience faster.</p>
+      </div>
+      <div class="finding-item fade-up">
+        <div class="finding-label">Usability Testing</div>
+        <p>Users successfully completed core tasks but requested more contextual feedback during haptic sessions. Visual indicators of "touch received" were identified as a critical addition.</p>
+      </div>
+      <div class="finding-item fade-up">
+        <div class="finding-label">Privacy Insights</div>
+        <p>Privacy settings surfaced as the most scrutinized section — users needed complete confidence in the consent model before they would feel comfortable using the device in personal contexts.</p>
+      </div>
+      <div class="finding-item fade-up">
+        <div class="finding-label">Integration Insight</div>
+        <p>Participants consistently asked whether Mile-A-Way would "just work" inside FaceTime or WhatsApp. Platform integration emerged as the single biggest adoption driver.</p>
+      </div>
+      <div class="finding-item fade-up">
+        <div class="finding-label">Customization Validation</div>
+        <p>Custom touch pattern creation was the most positively received feature across all sessions. Users spent more time in customization than any other area of the prototype.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROTOTYPE LINKS -->
+<section class="links-section" id="links">
+  <div class="container">
+    <div class="section-eyebrow">Design Artifacts</div>
+    <h2>Explore the <em>work</em></h2>
+    <p class="lead">Every artifact from discovery through high-fidelity prototype is documented and available to explore.</p>
+    <div class="links-row">
+      <a class="link-card" href="https://www.figma.com/design/LPOe9j9rQUEEpT214I7FmX/510?node-id=91-5&t=jGyBC0Dt3l6fweeY-1" target="_blank">
+        <div class="link-icon">🎨</div>
+        <h4>Main Figma File</h4>
+        <p>The complete design file — including wireframes, design system components, and all screens.</p>
+        <div class="link-arrow">View in Figma</div>
+      </a>
+      <a class="link-card" href="https://www.figma.com/design/LPOe9j9rQUEEpT214I7FmX/510" target="_blank">
+        <div class="link-icon">📱</div>
+        <h4>Device Connection Flow</h4>
+        <p>Wireframe exploration of the core device pairing and connection onboarding user flow.</p>
+        <div class="link-arrow">View Wireframes</div>
+      </a>
+      <a class="link-card" href="https://www.figma.com/design/LPOe9j9rQUEEpT214I7FmX/510" target="_blank">
+        <div class="link-icon">▶️</div>
+        <h4>Interactive Prototype</h4>
+        <p>The high-fidelity clickable prototype demonstrating the full Mile-A-Way user experience.</p>
+        <div class="link-arrow">Launch Prototype</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- REFLECTION -->
+<section class="reflection" id="reflection">
+  <div class="container">
+    <div class="section-eyebrow">Reflection</div>
+    <h2>What this project <em>taught us</em></h2>
+    <div class="reflection-inner">
+      <div class="reflection-sticky fade-up">
+        <h3>Learnings from the full design cycle</h3>
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-top:12px;">From initial proposal to final usability test, this project was a full-cycle lesson in human-centered design under real-world constraints.</p>
+      </div>
+      <div class="reflection-content">
+        <div class="reflection-block fade-up">
+          <h4>User-centered design changes everything</h4>
+          <p>Engaging directly with potential users revealed needs we never would have discovered on our own. The shift from "what would be cool" to "what do users actually need" was the single most impactful move we made — and it happened because we listened first.</p>
+        </div>
+        <div class="reflection-block fade-up">
+          <h4>Emotional safety in research requires intentional design</h4>
+          <p>Given the intimate nature of our subject matter, we learned to design the research environment as carefully as we designed the product. Having one interviewer per session, using careful language, and creating genuine psychological safety was as important as the interview guide itself.</p>
+        </div>
+        <div class="reflection-block fade-up">
+          <h4>Privacy is a design feature, not an afterthought</h4>
+          <p>Every evaluation phase reinforced the same message: trust is the prerequisite for intimacy. Building consent and privacy controls into the core experience — not as a settings screen buried in a menu — was a non-negotiable design principle.</p>
+        </div>
+        <div class="reflection-block fade-up">
+          <h4>Iteration is not failure — it's the process</h4>
+          <p>The formative evaluation exposed real problems with our initial wireframes. Instead of being discouraging, reviewing the work through fresh eyes before advancing gave us the exact information we needed to design something worth testing. The system worked.</p>
+        </div>
+        <div class="reflection-block fade-up">
+          <h4>Next Steps</h4>
+          <p>Future iterations would focus on: deeper platform integration APIs, refined haptic feedback vocabulary (expanded pattern library), enhanced session feedback indicators, and accessibility auditing for users with motor differences. The core concept validated — the product is worth building.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team">
+  <div class="container">
+    <div class="section-eyebrow">The Team</div>
+    <h2>Made with care by three</h2>
+    <div class="team-row">
+      <div class="team-card">
+        <div class="team-avatar av1">SV</div>
+        <h4>Sriram Venkatassamy</h4>
+        <p>Lead Researcher & Designer<br>Principal Investigator</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av2">PG</div>
+        <h4>Prasanna Lakshmi Guduru</h4>
+        <p>UX Researcher<br>Interaction Design</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av3">SK</div>
+        <h4>Shauna Keating</h4>
+        <p>UX Researcher<br>Evaluation Lead</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Mile-A-Way UX Case Study &nbsp;·&nbsp; HCI 510 &nbsp;·&nbsp; SUNY Oswego &nbsp;·&nbsp; <span>2024</span></p>
+  <p style="margin-top:8px;font-size:0.75rem;opacity:0.5;">Bridging hearts, one touch at a time.</p>
+</footer>
+
+<script>
+  // Intersection Observer for fade-up animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

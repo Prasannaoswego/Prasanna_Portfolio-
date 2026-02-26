@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram × Culture — Cross-Cultural UX Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0B;
+  --surface: #111113;
+  --surface2: #18181C;
+  --border: rgba(255,255,255,0.07);
+  --text: #E8E6E1;
+  --muted: #666;
+  --muted2: #444;
+  --usa: #E8604C;
+  --india: #F5A623;
+  --accent: #7C6EF7;
+  --green: #4CAF8A;
+  --white: #FFFFFF;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  position: fixed; width: 10px; height: 10px;
+  background: var(--accent); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transition: transform 0.15s ease;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(124,110,247,0.5); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transition: transform 0.4s ease, width 0.3s, height 0.3s;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,11,0.8);
+  backdrop-filter: blur(20px);
+}
+.nav-id {
+  font-family: var(--mono); font-size: 0.72rem;
+  color: var(--muted); letter-spacing: 0.05em;
+}
+.nav-id span { color: var(--accent); }
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-badge {
+  font-family: var(--mono); font-size: 0.68rem;
+  padding: 5px 12px; border: 1px solid var(--border);
+  border-radius: 100px; color: var(--muted);
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 48px 80px;
+  position: relative; overflow: hidden;
+}
+
+/* Grid background */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 80%);
+}
+
+.hero-split {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+}
+.hero-half {
+  flex: 1; opacity: 0;
+  animation: fadeHalf 1.5s ease forwards;
+}
+.hero-half.usa {
+  background: radial-gradient(ellipse 60% 80% at 0% 30%, rgba(232,96,76,0.08) 0%, transparent 70%);
+  animation-delay: 0.3s;
+}
+.hero-half.india {
+  background: radial-gradient(ellipse 60% 80% at 100% 30%, rgba(245,166,35,0.08) 0%, transparent 70%);
+  animation-delay: 0.5s;
+}
+@keyframes fadeHalf { to { opacity: 1; } }
+
+.hero-content { position: relative; z-index: 2; }
+
+.hero-kicker {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 40px;
+}
+.hero-kicker-line {
+  width: 40px; height: 1px; background: var(--accent);
+}
+.hero-kicker-text {
+  font-family: var(--mono); font-size: 0.72rem;
+  color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+h1 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(3rem, 7vw, 7.5rem);
+  font-weight: 700; line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+}
+h1 .line1 { display: block; color: var(--text); }
+h1 .line2 {
+  display: block; font-style: italic;
+  background: linear-gradient(90deg, var(--usa), var(--india));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+h1 .line3 { display: block; color: var(--muted2); }
+
+.hero-meta {
+  display: flex; gap: 60px; align-items: flex-start;
+}
+.meta-block { }
+.meta-block .meta-label {
+  font-family: var(--mono); font-size: 0.65rem;
+  color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.meta-block .meta-val {
+  font-size: 0.9rem; color: var(--text); line-height: 1.5;
+}
+
+.country-tags {
+  display: flex; gap: 10px; margin-top: 40px;
+}
+.ctag {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 100px;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em;
+}
+.ctag.usa { background: rgba(232,96,76,0.1); border: 1px solid rgba(232,96,76,0.3); color: var(--usa); }
+.ctag.india { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3); color: var(--india); }
+.ctag-dot { width: 6px; height: 6px; border-radius: 50%; }
+.ctag.usa .ctag-dot { background: var(--usa); }
+.ctag.india .ctag-dot { background: var(--india); }
+
+.scroll-cue {
+  position: absolute; bottom: 40px; right: 48px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 0.62rem;
+  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+  animation: scrollBounce 2.5s ease-in-out infinite;
+}
+.scroll-cue svg { opacity: 0.4; }
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+
+/* ── SECTIONS ── */
+section { padding: 120px 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+.eyebrow {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px;
+}
+.eyebrow-num {
+  font-family: var(--mono); font-size: 0.65rem;
+  color: var(--accent); letter-spacing: 0.08em;
+}
+.eyebrow-label {
+  font-family: var(--mono); font-size: 0.65rem;
+  color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.eyebrow-line { flex: 1; height: 1px; background: var(--border); }
+
+h2 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700; line-height: 1.1;
+  margin-bottom: 24px;
+}
+h2 em { font-style: italic; color: var(--accent); }
+h2 .usa-em { color: var(--usa); font-style: italic; }
+h2 .india-em { color: var(--india); font-style: italic; }
+
+.lead {
+  font-size: 1.05rem; line-height: 1.85;
+  color: rgba(232,230,225,0.55); max-width: 620px;
+}
+
+/* ── OVERVIEW ── */
+.overview { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.overview-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+  margin-top: 64px;
+}
+.overview-text p { font-size: 0.97rem; line-height: 1.9; color: rgba(232,230,225,0.6); margin-bottom: 18px; }
+
+.stat-cluster {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+}
+.stat-box {
+  background: var(--surface2); padding: 32px 28px;
+}
+.stat-box .big {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 3rem; font-weight: 700; line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-box .big.usa-c { color: var(--usa); }
+.stat-box .big.india-c { color: var(--india); }
+.stat-box .big.acc { color: var(--accent); }
+.stat-box .big.grn { color: var(--green); }
+.stat-box .small { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ── HOFSTEDE VISUAL ── */
+.hofstede { background: var(--bg); }
+.dimensions-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-top: 64px;
+}
+.dim-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px 24px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.dim-card:hover { border-color: rgba(124,110,247,0.3); transform: translateY(-4px); }
+.dim-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.dim-card:nth-child(1)::before { background: linear-gradient(90deg, var(--usa), var(--india)); }
+.dim-card:nth-child(2)::before { background: linear-gradient(90deg, var(--india), var(--accent)); }
+.dim-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent), var(--green)); }
+.dim-card:nth-child(4)::before { background: linear-gradient(90deg, var(--green), var(--usa)); }
+.dim-card:nth-child(5)::before { background: linear-gradient(90deg, var(--usa), var(--accent)); }
+.dim-card:nth-child(6)::before { background: linear-gradient(90deg, var(--accent), var(--india)); }
+
+.dim-num { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); margin-bottom: 12px; }
+.dim-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+.dim-card p { font-size: 0.83rem; line-height: 1.7; color: var(--muted); }
+.dim-vs {
+  display: flex; gap: 6px; margin-top: 16px; flex-wrap: wrap;
+}
+.dim-tag {
+  font-family: var(--mono); font-size: 0.65rem; padding: 4px 10px;
+  border-radius: 4px; letter-spacing: 0.05em;
+}
+.dim-tag.usa { background: rgba(232,96,76,0.12); color: var(--usa); }
+.dim-tag.india { background: rgba(245,166,35,0.12); color: var(--india); }
+
+/* ── METHODOLOGY ── */
+.methodology { background: var(--surface); }
+.method-track {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 64px;
+}
+.method-card {
+  padding: 32px 28px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 16px;
+}
+.method-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 18px;
+}
+.mi-1 { background: rgba(232,96,76,0.1); }
+.mi-2 { background: rgba(124,110,247,0.1); }
+.mi-3 { background: rgba(76,175,138,0.1); }
+.method-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+.method-card p { font-size: 0.85rem; line-height: 1.75; color: var(--muted); }
+
+.research-flow {
+  display: flex; align-items: center; gap: 0; margin-top: 48px;
+  overflow-x: auto; padding-bottom: 8px;
+}
+.flow-step {
+  flex: 1; min-width: 140px; text-align: center; padding: 20px 12px;
+  background: var(--bg); border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.flow-step:first-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
+.flow-step:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
+.flow-step::after {
+  content: '→';
+  position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted2); z-index: 1; font-size: 1rem;
+}
+.flow-step:last-child::after { display: none; }
+.flow-step .fs-num { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); margin-bottom: 6px; }
+.flow-step .fs-label { font-size: 0.78rem; font-weight: 700; color: var(--text); }
+.flow-step .fs-sub { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+
+/* ── PARTICIPANTS ── */
+.participants { background: var(--bg); }
+.participant-split {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 64px;
+}
+.participant-group {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+  overflow: hidden;
+}
+.group-header {
+  padding: 20px 28px;
+  display: flex; align-items: center; gap: 12px;
+}
+.group-header.usa-h { background: rgba(232,96,76,0.07); border-bottom: 1px solid rgba(232,96,76,0.15); }
+.group-header.india-h { background: rgba(245,166,35,0.07); border-bottom: 1px solid rgba(245,166,35,0.15); }
+.group-flag { font-size: 1.4rem; }
+.group-title { font-size: 1rem; font-weight: 800; }
+.group-title.usa-t { color: var(--usa); }
+.group-title.india-t { color: var(--india); }
+.group-count { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); margin-left: auto; }
+.participant-rows { padding: 16px 28px; }
+.p-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.p-row:last-child { border-bottom: none; }
+.p-id { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); }
+.p-data { font-size: 0.82rem; color: var(--muted); }
+.p-tag {
+  font-size: 0.7rem; padding: 3px 10px; border-radius: 4px;
+  font-family: var(--mono); background: var(--bg); color: var(--muted);
+}
+
+/* ── FINDINGS ── */
+.findings { background: var(--surface); }
+.findings-intro { max-width: 680px; margin-bottom: 64px; }
+
+.hofstede-findings {
+  display: flex; flex-direction: column; gap: 24px;
+}
+.hf-block {
+  display: grid; grid-template-columns: 200px 1fr 1fr; gap: 1px;
+  background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+}
+.hf-dim {
+  background: var(--bg); padding: 28px 24px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.hf-dim-label { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+.hf-dim-name { font-size: 0.88rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+.hf-country {
+  background: var(--surface2); padding: 28px 24px;
+}
+.hf-country-label {
+  font-family: var(--mono); font-size: 0.65rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.hf-country-label.usa-l { color: var(--usa); }
+.hf-country-label.india-l { color: var(--india); }
+.hf-country p { font-size: 0.85rem; line-height: 1.75; color: rgba(232,230,225,0.6); }
+.hf-country blockquote {
+  margin-top: 12px; padding: 10px 14px;
+  border-left: 2px solid var(--border);
+  font-family: 'Libre Baskerville', serif; font-style: italic;
+  font-size: 0.82rem; color: var(--muted);
+}
+
+/* ── SIMULATED FEED ── */
+.feed-section { background: var(--bg); }
+.feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 64px; }
+.feed-post {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+.feed-header { padding: 12px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+.feed-avatar { width: 28px; height: 28px; border-radius: 50%; }
+.feed-username { font-size: 0.78rem; font-weight: 700; }
+.feed-img {
+  width: 100%; aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; position: relative; overflow: hidden;
+}
+.feed-img-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; padding: 12px;
+}
+.feed-theme-badge {
+  font-family: var(--mono); font-size: 0.6rem; padding: 4px 10px;
+  border-radius: 100px; letter-spacing: 0.06em; text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+.post-reactions {
+  padding: 14px 14px 10px;
+}
+.reaction-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.react-btn {
+  font-size: 0.7rem; padding: 4px 10px; border-radius: 6px;
+  font-family: var(--mono); letter-spacing: 0.04em;
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.react-btn:hover { background: rgba(124,110,247,0.1); color: var(--accent); border-color: var(--accent); }
+.usa-response, .india-response { font-size: 0.78rem; padding: 8px 0; }
+.usa-response { border-top: 1px solid rgba(232,96,76,0.15); }
+.india-response { border-top: 1px solid rgba(245,166,35,0.15); }
+.resp-label { font-family: var(--mono); font-size: 0.6rem; margin-bottom: 4px; }
+.resp-label.usa-l { color: var(--usa); }
+.resp-label.india-l { color: var(--india); }
+.resp-text { color: rgba(232,230,225,0.55); line-height: 1.5; font-size: 0.77rem; }
+
+/* ── KEY INSIGHTS ── */
+.insights { background: var(--surface); }
+.insight-wall { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 64px; }
+.insight-card {
+  padding: 32px 28px; border-radius: 16px;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.insight-card.dark { background: var(--bg); }
+.insight-card.light { background: var(--surface2); }
+.insight-card.accent-card {
+  background: linear-gradient(135deg, rgba(124,110,247,0.08) 0%, transparent 60%);
+  border-color: rgba(124,110,247,0.2);
+}
+.insight-icon { font-size: 1.6rem; margin-bottom: 16px; }
+.insight-card h4 { font-family: 'Libre Baskerville', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+.insight-card p { font-size: 0.87rem; line-height: 1.8; color: rgba(232,230,225,0.55); }
+.insight-card .insight-tag {
+  display: inline-block; margin-top: 16px;
+  font-family: var(--mono); font-size: 0.62rem; padding: 4px 10px;
+  border-radius: 4px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.t-acc { background: rgba(124,110,247,0.12); color: var(--accent); }
+.t-usa { background: rgba(232,96,76,0.12); color: var(--usa); }
+.t-india { background: rgba(245,166,35,0.12); color: var(--india); }
+.t-grn { background: rgba(76,175,138,0.12); color: var(--green); }
+
+/* ── IMPLICATIONS ── */
+.implications { background: var(--bg); }
+.impl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 64px; }
+.impl-card {
+  padding: 28px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: 16px;
+  transition: transform 0.25s, border-color 0.25s;
+}
+.impl-card:hover { transform: translateY(-4px); border-color: rgba(124,110,247,0.25); }
+.impl-step { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); margin-bottom: 10px; }
+.impl-card h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 10px; }
+.impl-card p { font-size: 0.83rem; line-height: 1.75; color: var(--muted); }
+
+/* ── REFLECTION ── */
+.reflection { background: var(--surface); border-top: 1px solid var(--border); }
+.reflection-inner {
+  display: grid; grid-template-columns: 1fr 1.5fr; gap: 80px; margin-top: 64px;
+}
+.refl-left { position: sticky; top: 120px; }
+.refl-left p { font-size: 0.9rem; line-height: 1.9; color: var(--muted); margin-top: 16px; }
+.refl-right { display: flex; flex-direction: column; gap: 16px; }
+.refl-item {
+  padding: 24px 28px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 14px;
+  border-left: 2px solid var(--accent);
+}
+.refl-item h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 8px; }
+.refl-item p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg); border-top: 1px solid var(--border);
+  padding: 60px 48px; text-align: center;
+}
+.footer-logo {
+  font-family: 'Libre Baskerville', serif; font-style: italic;
+  font-size: 1.8rem; color: var(--text); margin-bottom: 16px;
+}
+.footer-sub { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 32px; }
+.footer-line { width: 60px; height: 1px; background: var(--border); margin: 0 auto 24px; }
+.footer-credits { font-size: 0.8rem; color: var(--muted2); }
+.footer-credits span { color: var(--accent); }
+
+/* ── ANIMATIONS ── */
+.fade-up {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible { opacity: 1; transform: none; }
+[class*="fade-up"]:nth-child(2) { transition-delay: 0.08s; }
+[class*="fade-up"]:nth-child(3) { transition-delay: 0.16s; }
+[class*="fade-up"]:nth-child(4) { transition-delay: 0.24s; }
+[class*="fade-up"]:nth-child(5) { transition-delay: 0.32s; }
+[class*="fade-up"]:nth-child(6) { transition-delay: 0.4s; }
+
+@media(max-width:900px){
+  .overview-grid,.dimensions-grid,.method-track,.participant-split,.hofstede-findings .hf-block,
+  .insight-wall,.impl-grid,.reflection-inner{grid-template-columns:1fr;}
+  .hf-block{grid-template-columns:1fr;}
+  nav{padding:16px 24px;} .nav-links{display:none;}
+  .hero,.container{padding-left:24px;padding-right:24px;}
+  .feed-grid{grid-template-columns:1fr;}
+  h1{font-size:2.8rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-id">PLG — <span>HCI 510</span> Research</div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#hofstede">Framework</a>
+    <a href="#methodology">Methods</a>
+    <a href="#findings">Findings</a>
+    <a href="#insights">Insights</a>
+    <a href="#implications">Impact</a>
+  </div>
+  <div class="nav-badge">2024–25</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding-top:0;">
+  <div class="hero-split">
+    <div class="hero-half usa"></div>
+    <div class="hero-half india"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-kicker">
+      <div class="hero-kicker-line"></div>
+      <div class="hero-kicker-text">Cross-Cultural UX Research · SUNY Oswego</div>
+    </div>
+    <h1>
+      <span class="line1">Instagram</span>
+      <span class="line2">Across Cultures</span>
+      <span class="line3">USA × India</span>
+    </h1>
+    <div class="hero-meta">
+      <div class="meta-block">
+        <div class="meta-label">Researcher</div>
+        <div class="meta-val">Prasanna Lakshmi Guduru</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Supervisor</div>
+        <div class="meta-val">Dr. Damian Schofield</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Framework</div>
+        <div class="meta-val">Hofstede's Cultural Dimensions</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Approach</div>
+        <div class="meta-val">Mixed Methods · Exploratory</div>
+      </div>
+    </div>
+    <div class="country-tags">
+      <div class="ctag usa"><div class="ctag-dot"></div>United States · Individualist · Low PDI</div>
+      <div class="ctag india"><div class="ctag-dot"></div>India · Collectivist · High PDI</div>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <svg width="16" height="24" viewBox="0 0 16 24"><rect x="5" y="0" width="6" height="16" rx="3" fill="none" stroke="white" stroke-width="1.5"/><circle cx="8" cy="5" r="2" fill="white"><animate attributeName="cy" values="4;10;4" dur="1.8s" repeatCount="indefinite"/></circle></svg>
+    Scroll
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="overview" id="overview">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">01</span>
+      <span class="eyebrow-label">Project Overview</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2>How culture shapes the way we <em>scroll</em></h2>
+    <div class="overview-grid">
+      <div class="overview-text fade-up">
+        <p>Instagram is the world's visual town square — but not everyone sees the same town. With over a billion users across radically different cultural contexts, the same interface, algorithm, and content types land very differently depending on where you live, how you were raised, and what values your culture prioritizes.</p>
+        <p>This research investigates exactly that: how do users from the <strong style="color:var(--usa)">United States</strong> and <strong style="color:var(--india)">India</strong> differ in their emotional, behavioral, and interpretive responses to Instagram — and why? Using Hofstede's six cultural dimensions as a theoretical lens, we designed a multi-method study to surface these cross-cultural differences with rigor and nuance.</p>
+        <p>The implications are significant for designers, product teams, and companies seeking to build globally inclusive digital products that respect cultural values rather than overriding them.</p>
+      </div>
+      <div class="stat-cluster fade-up">
+        <div class="stat-box">
+          <div class="big usa-c">3</div>
+          <div class="small">USA Participants</div>
+        </div>
+        <div class="stat-box">
+          <div class="big india-c">3</div>
+          <div class="small">India Participants</div>
+        </div>
+        <div class="stat-box">
+          <div class="big acc">6</div>
+          <div class="small">Hofstede Dimensions</div>
+        </div>
+        <div class="stat-box">
+          <div class="big grn">3</div>
+          <div class="small">Data Methods</div>
+        </div>
+        <div class="stat-box" style="grid-column:span 2;">
+          <div class="big" style="color:var(--text);font-size:1.6rem;">Exploratory · Qualitative-Led</div>
+          <div class="small">Research Design Paradigm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOFSTEDE FRAMEWORK -->
+<section class="hofstede" id="hofstede">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">02</span>
+      <span class="eyebrow-label">Theoretical Framework</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2>Hofstede's six lenses for <em>culture</em></h2>
+    <p class="lead">Dr. Geert Hofstede's cultural dimensions theory provides a structured, nationally validated framework for comparing cultures. Each dimension reveals a fundamentally different axis of cultural value.</p>
+    <div class="dimensions-grid">
+      <div class="dim-card fade-up">
+        <div class="dim-num">IDV — Dimension 01</div>
+        <h4>Individualism vs. Collectivism</h4>
+        <p>Does the culture prioritize personal freedom and self-expression, or group harmony and community identity?</p>
+        <div class="dim-vs">
+          <span class="dim-tag usa">USA · High Individualism (91)</span>
+          <span class="dim-tag india">India · Collectivist (48)</span>
+        </div>
+      </div>
+      <div class="dim-card fade-up">
+        <div class="dim-num">PDI — Dimension 02</div>
+        <h4>Power Distance Index</h4>
+        <p>How comfortable is a society with unequal distributions of power and hierarchical authority?</p>
+        <div class="dim-vs">
+          <span class="dim-tag usa">USA · Low PDI (40)</span>
+          <span class="dim-tag india">India · High PDI (77)</span>
+        </div>
+      </div>
+      <div class="dim-card fade-up">
+        <div class="dim-num">MAS — Dimension 03</div>
+        <h4>Masculinity vs. Femininity</h4>
+        <p>Are social values focused on achievement, competition, and status — or care, collaboration, and quality of life?</p>
+        <div class="dim-vs">
+          <span class="dim-tag usa">USA · Masculine (62)</span>
+          <span class="dim-tag india">India · Masculine (56)</span>
+        </div>
+      </div>
+      <div class="dim-card fade-up">
+        <div class="dim-num">UAI — Dimension 04</div>
+        <h4>Uncertainty Avoidance</h4>
+        <p>How does a society handle ambiguity, the unknown, and situations without clear rules or structure?</p>
+        <div class="dim-vs">
+          <span class="dim-tag usa">USA · Low UAI (46)</span>
+          <span class="dim-tag india">India · Low-Mid UAI (40)</span>
+        </div>
+      </div>
+      <div class="dim-card fade-up">
+        <div class="dim-num">LTO — Dimension 05</div>
+        <h4>Long-Term vs. Short-Term Orientation</h4>
+        <p>Do cultural values emphasize future planning and perseverance, or tradition and near-term results?</p>
+        <div class="dim-vs">
+          <span class="dim-tag usa">USA · Short-Term (26)</span>
+          <span class="dim-tag india">India · Long-Term (51)</span>
+        </div>
+      </div>
+      <div class="dim-card fade-up">
+        <div class="dim-num">IVR — Dimension 06</div>
+        <h4>Indulgence vs. Restraint</h4>
+        <p>Are people free to gratify desires and enjoy life, or do social norms promote discipline and self-control?</p>
+        <div class="dim-vs">
+          <span class="dim-tag usa">USA · Indulgent (68)</span>
+          <span class="dim-tag india">India · Restrained (26)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="methodology" id="methodology">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">03</span>
+      <span class="eyebrow-label">Research Design & Methods</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2>Three methods, one <em>cultural truth</em></h2>
+    <p class="lead">A mixed-methods approach was designed to triangulate findings — combining structured survey data, behavioral observation, and real-world ecological evidence from participants' own feeds.</p>
+    <div class="method-track">
+      <div class="method-card fade-up">
+        <div class="method-icon mi-1">📋</div>
+        <h4>Structured Survey</h4>
+        <p>A three-part survey collected demographic context, Instagram usage habits and frequency, and scenario-based engagement questions. Used as a contextual anchor for qualitative findings — not a psychometric measurement tool. Likert scales provided comparative data points across cultural groups.</p>
+      </div>
+      <div class="method-card fade-up">
+        <div class="method-icon mi-2">🎭</div>
+        <h4>Simulated Instagram Feed + Think-Aloud</h4>
+        <p>Participants interacted with a curated, realistic scrollable Instagram feed featuring posts designed to surface cultural response differences across Hofstede's dimensions — achievement vs. community, luxury vs. simplicity, explicit vs. implicit messaging. Participants verbalized thoughts in real time using the think-aloud protocol.</p>
+      </div>
+      <div class="method-card fade-up">
+        <div class="method-icon mi-3">🖼️</div>
+        <h4>Mood Board Reflections</h4>
+        <p>Each participant selected four Instagram posts from their real daily feed and wrote 4–6 sentence reflections per post explaining why it resonated, how it made them feel, and what action they took. This ecological layer captured authentic, in-the-wild cultural resonance without compromising participant privacy.</p>
+      </div>
+    </div>
+    <div class="research-flow">
+      <div class="flow-step">
+        <div class="fs-num">PHASE 01</div>
+        <div class="fs-label">Recruitment</div>
+        <div class="fs-sub">University networks</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">PHASE 02</div>
+        <div class="fs-label">Screening</div>
+        <div class="fs-sub">Demographics + consent</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">PHASE 03</div>
+        <div class="fs-label">Survey</div>
+        <div class="fs-sub">Background + habits</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">PHASE 04</div>
+        <div class="fs-label">Simulated Feed</div>
+        <div class="fs-sub">Think-aloud protocol</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">PHASE 05</div>
+        <div class="fs-label">Mood Board</div>
+        <div class="fs-sub">Real-feed reflections</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">PHASE 06</div>
+        <div class="fs-label">Analysis</div>
+        <div class="fs-sub">Thematic + cross-case</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTICIPANTS -->
+<section class="participants" id="participants">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">04</span>
+      <span class="eyebrow-label">Participants</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2>Six voices, <usa-em style="color:var(--usa);font-style:italic;">two cultures</usa-em></h2>
+    <p class="lead">Six participants were recruited from university networks — three from each country. Age diversity (18–45) was intentional to capture generational variation within cultural patterns.</p>
+    <div class="participant-split">
+      <div class="participant-group fade-up">
+        <div class="group-header usa-h">
+          <span class="group-flag">🇺🇸</span>
+          <span class="group-title usa-t">United States</span>
+          <span class="group-count">n = 3</span>
+        </div>
+        <div class="participant-rows">
+          <div class="p-row">
+            <span class="p-id">P-US01</span>
+            <span class="p-data">Female · 22 · Urban</span>
+            <span class="p-tag">Active poster</span>
+          </div>
+          <div class="p-row">
+            <span class="p-id">P-US02</span>
+            <span class="p-data">Male · 29 · Suburban</span>
+            <span class="p-tag">Content consumer</span>
+          </div>
+          <div class="p-row">
+            <span class="p-id">P-US03</span>
+            <span class="p-data">Female · 38 · Urban</span>
+            <span class="p-tag">Occasional poster</span>
+          </div>
+        </div>
+      </div>
+      <div class="participant-group fade-up">
+        <div class="group-header india-h">
+          <span class="group-flag">🇮🇳</span>
+          <span class="group-title india-t">India</span>
+          <span class="group-count">n = 3</span>
+        </div>
+        <div class="participant-rows">
+          <div class="p-row">
+            <span class="p-id">P-IN01</span>
+            <span class="p-data">Female · 21 · Urban</span>
+            <span class="p-tag">Reel-focused</span>
+          </div>
+          <div class="p-row">
+            <span class="p-id">P-IN02</span>
+            <span class="p-data">Male · 26 · Urban</span>
+            <span class="p-tag">Business usage</span>
+          </div>
+          <div class="p-row">
+            <span class="p-id">P-IN03</span>
+            <span class="p-data">Female · 44 · Suburban</span>
+            <span class="p-tag">Family content</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:16px;font-family:var(--mono);">* All participant IDs are anonymized. Demographic profiles are representative composites.</p>
+  </div>
+</section>
+
+<!-- FINDINGS BY DIMENSION -->
+<section class="findings" id="findings">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">05</span>
+      <span class="eyebrow-label">Cross-Cultural Findings</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <div class="findings-intro">
+      <h2>Where culture <em>diverges</em> in the scroll</h2>
+      <p class="lead">Each Hofstede dimension produced distinct patterns in how participants interpreted, emotionally responded to, and behaviorally engaged with the same Instagram content.</p>
+    </div>
+    <div class="hofstede-findings">
+
+      <div class="hf-block fade-up">
+        <div class="hf-dim">
+          <div class="hf-dim-label">IDV</div>
+          <div class="hf-dim-name">Individualism vs. Collectivism</div>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label usa-l">🇺🇸 USA Participants</div>
+          <p>American participants responded strongly to personal achievement posts — travel, individual milestones, personal brand content. Instagram was viewed primarily as a self-expression platform. They were more open to sharing personal details and showed higher engagement with influencers positioned as individual experts.</p>
+          <blockquote>"I like seeing what people are accomplishing — it motivates me to do my own thing."</blockquote>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label india-l">🇮🇳 India Participants</div>
+          <p>Indian participants responded more to content framed around family, community, and cultural heritage. Instagram was seen as a space for connection and shared experience. There was visible discomfort with highly personal or intimate self-disclosure. Engagement centered on relatable group narratives.</p>
+          <blockquote>"This post feels more real because it shows the whole family, not just one person doing something."</blockquote>
+        </div>
+      </div>
+
+      <div class="hf-block fade-up">
+        <div class="hf-dim">
+          <div class="hf-dim-label">PDI</div>
+          <div class="hf-dim-name">Power Distance</div>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label usa-l">🇺🇸 USA Participants</div>
+          <p>American participants treated influencers as peers — sources of information rather than authority figures. They questioned influencer claims, engaged critically, and valued authenticity and relatability over prestige. Celebrity endorsements were met with more skepticism.</p>
+          <blockquote>"I'd have to look this up — just because someone's famous doesn't mean I trust what they're saying."</blockquote>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label india-l">🇮🇳 India Participants</div>
+          <p>Indian participants were more likely to follow verified celebrities and public figures with higher perceived status. There was a stronger tendency to view social media influence hierarchically — with well-known figures as authoritative trendsetters whose endorsements carry more weight.</p>
+          <blockquote>"If this person is wearing it, it must be really popular. I would trust this recommendation."</blockquote>
+        </div>
+      </div>
+
+      <div class="hf-block fade-up">
+        <div class="hf-dim">
+          <div class="hf-dim-label">MAS</div>
+          <div class="hf-dim-name">Masculinity vs. Femininity</div>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label usa-l">🇺🇸 USA Participants</div>
+          <p>Achievement-oriented content resonated strongly — career wins, fitness goals, travel achievements. USA participants responded competitively to success narratives and were more likely to compare themselves to content subjects. Both male and female participants showed appreciation for goal-oriented posts.</p>
+          <blockquote>"This makes me want to push harder. Like, if they can run a marathon, why can't I?"</blockquote>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label india-l">🇮🇳 India Participants</div>
+          <p>While also valuing achievement, Indian participants' mood board selections skewed more toward content reflecting balance, family well-being, and cultural celebration. Success was often framed relationally — "how this benefits others" rather than "what I achieved." Content about cooperation and harmony was viewed positively.</p>
+          <blockquote>"I saved this because it shows a family celebrating together — not just one person winning."</blockquote>
+        </div>
+      </div>
+
+      <div class="hf-block fade-up">
+        <div class="hf-dim">
+          <div class="hf-dim-label">UAI</div>
+          <div class="hf-dim-name">Uncertainty Avoidance</div>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label usa-l">🇺🇸 USA Participants</div>
+          <p>American participants showed higher tolerance for experimental, ambiguous, or unconventional content. They engaged more with niche accounts, novel formats, and content that challenged expectations. There was less need for explicit structure or clear guidelines in content before engaging.</p>
+          <blockquote>"I love when I find something weird and different. That's what makes Instagram interesting."</blockquote>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label india-l">🇮🇳 India Participants</div>
+          <p>Indian participants showed a preference for content with familiar formats, clear context, and known figures. Ambiguous content — especially around controversial topics — was often scrolled past or flagged as uncomfortable. There was a preference for content that reinforced rather than challenged established norms.</p>
+          <blockquote>"I wouldn't engage with something controversial. It's better to stay away from things that cause conflict."</blockquote>
+        </div>
+      </div>
+
+      <div class="hf-block fade-up">
+        <div class="hf-dim">
+          <div class="hf-dim-label">LTO + IVR</div>
+          <div class="hf-dim-name">Long-Term Orientation & Indulgence</div>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label usa-l">🇺🇸 USA Participants</div>
+          <p>High indulgence scores reflected in USA participants' Instagram behavior — more leisure content, lifestyle, entertainment, and immediate gratification-focused posts. Sharing personal enjoyment was socially normal. Content about fun, celebration, and pleasure was liked and reshared freely.</p>
+          <blockquote>"I post what I enjoy — food, concerts, travel. That's what Instagram is for me."</blockquote>
+        </div>
+        <div class="hf-country">
+          <div class="hf-country-label india-l">🇮🇳 India Participants</div>
+          <p>Indian participants demonstrated more restraint in what they shared and liked publicly — content with social utility (self-improvement, cultural education, family values) was prioritized over pure entertainment. Mood board selections often included motivational, educational, or culturally grounded content reflecting long-term value orientation.</p>
+          <blockquote>"I saved this because it teaches something. I don't usually like things that are just for fun."</blockquote>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SIMULATED FEED HIGHLIGHTS -->
+<section class="feed-section">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">06</span>
+      <span class="eyebrow-label">Simulated Feed Analysis</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2>The same post, <em>different worlds</em></h2>
+    <p class="lead">Three post types from the simulated feed produced the starkest cross-cultural divergences in interpretation and action.</p>
+    <div class="feed-grid">
+
+      <div class="feed-post fade-up">
+        <div class="feed-header">
+          <div class="feed-avatar" style="background:linear-gradient(135deg,#f77,#c44);"></div>
+          <div style="flex:1;">
+            <div class="feed-username">@fitness_daily</div>
+            <div style="font-size:0.65rem;color:var(--muted);">Sponsored</div>
+          </div>
+        </div>
+        <div class="feed-img" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+          <span>🏆</span>
+          <div class="feed-img-overlay">
+            <div class="feed-theme-badge" style="background:rgba(232,96,76,0.2);color:var(--usa);">Achievement / Status</div>
+          </div>
+        </div>
+        <div class="post-reactions">
+          <div class="reaction-row">
+            <button class="react-btn">👍 Like</button>
+            <button class="react-btn">📤 Share</button>
+            <button class="react-btn">🔖 Save</button>
+            <button class="react-btn">⏭ Skip</button>
+          </div>
+          <div class="usa-response">
+            <div class="resp-label usa-l">🇺🇸 USA Response</div>
+            <div class="resp-text">High engagement. Liked and commented. Viewed as personal motivation — "this represents what I want to achieve." Saved to revisit later.</div>
+          </div>
+          <div class="india-response">
+            <div class="resp-label india-l">🇮🇳 India Response</div>
+            <div class="resp-text">Acknowledged but not saved. Seen as aspirational but slightly disconnected — "feels individualistic, not for me." Noticed but scrolled past.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-post fade-up">
+        <div class="feed-header">
+          <div class="feed-avatar" style="background:linear-gradient(135deg,#f5a623,#c77d00);"></div>
+          <div style="flex:1;">
+            <div class="feed-username">@family_stories</div>
+            <div style="font-size:0.65rem;color:var(--muted);">Personal post</div>
+          </div>
+        </div>
+        <div class="feed-img" style="background:linear-gradient(135deg,#2a1a0e,#4a3010);">
+          <span>👨‍👩‍👧‍👦</span>
+          <div class="feed-img-overlay">
+            <div class="feed-theme-badge" style="background:rgba(245,166,35,0.2);color:var(--india);">Community / Family</div>
+          </div>
+        </div>
+        <div class="post-reactions">
+          <div class="reaction-row">
+            <button class="react-btn">👍 Like</button>
+            <button class="react-btn">📤 Share</button>
+            <button class="react-btn">🔖 Save</button>
+            <button class="react-btn">⏭ Skip</button>
+          </div>
+          <div class="usa-response">
+            <div class="resp-label usa-l">🇺🇸 USA Response</div>
+            <div class="resp-text">Mixed reaction — found it "sweet" but less personally relevant. Less likely to share. Not reflective of their own identity performance on Instagram.</div>
+          </div>
+          <div class="india-response">
+            <div class="resp-label india-l">🇮🇳 India Response</div>
+            <div class="resp-text">Strong positive reaction. Liked, shared, and saved. Felt "real" and "relatable." Multiple participants mentioned sending it to family members directly.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-post fade-up">
+        <div class="feed-header">
+          <div class="feed-avatar" style="background:linear-gradient(135deg,#7c6ef7,#3a2ea0);"></div>
+          <div style="flex:1;">
+            <div class="feed-username">@luxury.life</div>
+            <div style="font-size:0.65rem;color:var(--muted);">Influencer</div>
+          </div>
+        </div>
+        <div class="feed-img" style="background:linear-gradient(135deg,#0d0d1a,#1a1a3e);">
+          <span>💎</span>
+          <div class="feed-img-overlay">
+            <div class="feed-theme-badge" style="background:rgba(124,110,247,0.2);color:var(--accent);">Status / Aspiration</div>
+          </div>
+        </div>
+        <div class="post-reactions">
+          <div class="reaction-row">
+            <button class="react-btn">👍 Like</button>
+            <button class="react-btn">📤 Share</button>
+            <button class="react-btn">🔖 Save</button>
+            <button class="react-btn">⏭ Skip</button>
+          </div>
+          <div class="usa-response">
+            <div class="resp-label usa-l">🇺🇸 USA Response</div>
+            <div class="resp-text">Skepticism was prevalent. Participants questioned authenticity. "Who paid for this?" — didn't trust the influencer unless already familiar. Peer-level framing preferred.</div>
+          </div>
+          <div class="india-response">
+            <div class="resp-label india-l">🇮🇳 India Response</div>
+            <div class="resp-text">Viewed as aspirational and authoritative. Verified badge and follower count increased trust. More likely to save or follow. Status signals carried more weight.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- KEY INSIGHTS -->
+<section class="insights" id="insights">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">07</span>
+      <span class="eyebrow-label">Synthesized Insights</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2>Eight insights that <em>matter</em></h2>
+    <div class="insight-wall">
+      <div class="insight-card dark fade-up">
+        <div class="insight-icon">🪞</div>
+        <h4>Instagram as Identity Mirror vs. Connection Portal</h4>
+        <p>For USA participants, Instagram primarily functioned as a self-expression and personal branding platform. For Indian participants, it was more consistently a portal for group connection, cultural celebration, and maintaining social bonds. The same app, two fundamentally different psychological functions.</p>
+        <span class="insight-tag t-acc">IDV Dimension</span>
+      </div>
+      <div class="insight-card accent-card fade-up">
+        <div class="insight-icon">👑</div>
+        <h4>Authority vs. Authenticity as Trust Signals</h4>
+        <p>Indian participants used status indicators — follower counts, verification badges, celebrity association — as primary trust signals. USA participants prioritized authenticity markers — tone of voice, peer endorsements, transparency about sponsorship. This has direct implications for influencer strategy and design of trust signals.</p>
+        <span class="insight-tag t-india">PDI Dimension</span>
+      </div>
+      <div class="insight-card light fade-up">
+        <div class="insight-icon">😌</div>
+        <h4>Restraint as Self-Protective Cultural Logic</h4>
+        <p>Indian participants' reluctance to engage with controversial or ambiguous content was not apathy — it was a rational cultural strategy. Avoiding public disagreement maintains group harmony (collectivism) and respects social norms (restraint). Designers should not interpret this as disengagement; it reflects different norms of participation.</p>
+        <span class="insight-tag t-india">UAI + IVR</span>
+      </div>
+      <div class="insight-card dark fade-up">
+        <div class="insight-icon">🎯</div>
+        <h4>Utility vs. Entertainment as Content Value</h4>
+        <p>Mood board selections revealed a consistent pattern: Indian participants curated content with lasting educational or cultural value. USA participants were more likely to save content for enjoyment, inspiration, or entertainment. Long-term vs. short-term orientation plays out in the very content people preserve and return to.</p>
+        <span class="insight-tag t-grn">LTO Dimension</span>
+      </div>
+      <div class="insight-card light fade-up">
+        <div class="insight-icon">🌐</div>
+        <h4>The Algorithm Doesn't Know Culture</h4>
+        <p>Instagram's engagement-maximizing algorithm surfaces content based on behavioral signals — but those signals are themselves culturally determined. A design implication: what counts as "high engagement" differs cross-culturally, meaning the algorithm implicitly privileges certain cultural engagement styles (often individualistic, indulgent) over others.</p>
+        <span class="insight-tag t-acc">Design Implication</span>
+      </div>
+      <div class="insight-card accent-card fade-up">
+        <div class="insight-icon">🔒</div>
+        <h4>Privacy as a Cultural Value, Not Just a Feature</h4>
+        <p>The study revealed meaningfully different privacy expectations. Indian participants were more protective of personal information in public feeds but more open to community sharing in known circles. USA participants were more comfortable with broad sharing but more protective of data being used by the platform. Privacy design is not universal.</p>
+        <span class="insight-tag t-usa">Cross-Dimension</span>
+      </div>
+      <div class="insight-card dark fade-up">
+        <div class="insight-icon">💬</div>
+        <h4>Commenting as a Social Act is Culturally Variable</h4>
+        <p>USA participants commented more freely on public posts — including critique and disagreement. Indian participants reserved comments for positive, supportive, or relationship-affirming interactions. The comments section as a design element carries different social weight across cultures and shapes how "safe" public engagement feels.</p>
+        <span class="insight-tag t-india">IDV + UAI</span>
+      </div>
+      <div class="insight-card light fade-up">
+        <div class="insight-icon">🏆</div>
+        <h4>Achievement Content Lands Differently</h4>
+        <p>Posts about personal milestones, career success, and self-improvement inspired different emotions cross-culturally. USA participants felt motivated and competitive. Indian participants sometimes felt pressured or socially obligated to respond positively — even when the achievement felt distant from their lived experience. Achievement design is not motivationally neutral.</p>
+        <span class="insight-tag t-usa">MAS Dimension</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN IMPLICATIONS -->
+<section class="implications" id="implications">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">08</span>
+      <span class="eyebrow-label">Design Implications</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2>What this means for <em>global design</em></h2>
+    <p class="lead">Cross-cultural research like this exists to make products better. Here's what product designers and teams building for global audiences should take forward.</p>
+    <div class="impl-grid">
+      <div class="impl-card fade-up">
+        <div class="impl-step">IMPLICATION 01</div>
+        <h4>Design for Dual Identity Expression</h4>
+        <p>Give users the ability to post to close circles versus broad audiences with equal prominence. Collectivist users need a "community" sharing mode that doesn't feel like public broadcasting. Individualist users want maximum personal expression reach.</p>
+      </div>
+      <div class="impl-card fade-up">
+        <div class="impl-step">IMPLICATION 02</div>
+        <h4>Rethink the Trust Signal System</h4>
+        <p>Verification badges and follower counts function as authority signals in high-PDI contexts. In low-PDI markets, transparency signals (disclosure labels, authentic reviews) carry more weight. Consider culturally adaptive trust indicator design.</p>
+      </div>
+      <div class="impl-card fade-up">
+        <div class="impl-step">IMPLICATION 03</div>
+        <h4>Localize the Engagement Architecture</h4>
+        <p>The "like, comment, share" paradigm privileges extroverted, public engagement styles. Design passive engagement signals — save, bookmark, quiet appreciation — as first-class citizens for restrained or high-UAI users who engage deeply but quietly.</p>
+      </div>
+      <div class="impl-card fade-up">
+        <div class="impl-step">IMPLICATION 04</div>
+        <h4>Culturally Adaptive Content Discovery</h4>
+        <p>Algorithm design should account for the fact that behavioral signals are culturally encoded. Low engagement from high-UAI or collectivist users doesn't mean low interest — it may mean a different engagement vocabulary. Design discovery systems that aren't blind to this.</p>
+      </div>
+      <div class="impl-card fade-up">
+        <div class="impl-step">IMPLICATION 05</div>
+        <h4>Privacy Architecture Must Be Cultural</h4>
+        <p>Privacy design cannot be a single global UX pattern. High-PDI and collectivist users need strong community-circle controls. Low-PDI and individualist users need strong data-use transparency. Both matter — but they are solving different cultural anxieties.</p>
+      </div>
+      <div class="impl-card fade-up">
+        <div class="impl-step">IMPLICATION 06</div>
+        <h4>Use Hofstede as a Design Lens</h4>
+        <p>Hofstede's framework should sit alongside accessibility, inclusive design, and universal UX principles as a core lens in product design sprints. Before shipping global features, map them against the six cultural dimensions and stress-test the assumptions baked into each design decision.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFLECTION -->
+<section class="reflection" id="reflection">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-num">09</span>
+      <span class="eyebrow-label">Research Reflection</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <div class="reflection-inner">
+      <div class="refl-left fade-up">
+        <h2>What I <em>learned</em></h2>
+        <p>This research challenged me to look at a platform I use every day through a completely different set of eyes — and realize how much of what I assumed was universal was actually deeply cultural. That shift in perspective is the most valuable thing I'm taking forward as a designer.</p>
+      </div>
+      <div class="refl-right">
+        <div class="refl-item fade-up">
+          <h4>Exploratory research is a skill, not a fallback</h4>
+          <p>With only six participants, this study couldn't yield statistically significant conclusions — and that's fine. Exploratory, qualitative research reveals the shape of a phenomenon, surfaces hypotheses, and generates cultural vocabulary that larger studies can then test. Learning to be rigorous with small samples is a distinct methodological competency.</p>
+        </div>
+        <div class="refl-item fade-up">
+          <h4>Frameworks provide structure, not answers</h4>
+          <p>Hofstede's dimensions gave us a structured language for observing cultural differences — but the dimensions didn't predict behavior. They illuminated it after the fact. The richest moments were when participant behavior broke the expectation set by the framework and demanded deeper explanation.</p>
+        </div>
+        <div class="refl-item fade-up">
+          <h4>The simulated feed was the methodological breakthrough</h4>
+          <p>Asking participants what they do on Instagram produced expected answers. Watching them react to real-looking posts in real time, out loud, surfaced reactions they didn't know they had — and would never have articulated in a standard survey. Observation-based methods are irreplaceable for uncovering tacit cultural logic.</p>
+        </div>
+        <div class="refl-item fade-up">
+          <h4>Global products are never culturally neutral</h4>
+          <p>Every design decision — default privacy settings, engagement mechanics, content surfacing algorithms — embeds cultural assumptions. The most important thing this research taught me is that "neutral" is often a disguise for "designed for the dominant culture." Good global design acknowledges this and does the work to address it.</p>
+        </div>
+        <div class="refl-item fade-up">
+          <h4>Next Steps</h4>
+          <p>Scaling this methodology to larger samples (n=30+ per country) with quantitative validation, expanding to additional cultural contexts (Brazil, Japan, Germany), and developing a cross-cultural design evaluation rubric based on Hofstede's dimensions for use in product design sprints.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Prasanna Lakshmi Guduru</div>
+  <div class="footer-sub">HCI Research · SUNY Oswego · 2024–25</div>
+  <div class="footer-line"></div>
+  <div class="footer-credits">
+    Cross-Cultural Study of Instagram's Influence on Users<br>
+    Supervised by <span>Dr. Damian Schofield</span> · Human-Computer Interaction Master's Program<br>
+    <span>pguduru@oswego.edu</span>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  cursor.style.left = mx - 5 + 'px'; cursor.style.top = my - 5 + 'px';
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  cursorRing.style.left = rx - 18 + 'px'; cursorRing.style.top = ry - 18 + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+document.querySelectorAll('a, button, .dim-card, .impl-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursorRing.style.width = '60px'; cursorRing.style.height = '60px'; });
+  el.addEventListener('mouseleave', () => { cursorRing.style.width = '36px'; cursorRing.style.height = '36px'; });
+});
+
+// Scroll fade-up
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// Stagger children
+document.querySelectorAll('.dimensions-grid, .method-track, .impl-grid, .insight-wall, .hofstede-findings, .participant-split').forEach(parent => {
+  [...parent.children].forEach((child, i) => {
+    child.classList.add('fade-up');
+    child.style.transitionDelay = (i * 0.07) + 's';
+  });
+});
+</script>
+</body>
+</html>

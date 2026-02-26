@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CheckMate — Product Design Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Karla:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e8;
+  --cream2: #ede7d9;
+  --ink: #1a1814;
+  --ink2: #2e2b25;
+  --warm-mid: #7a6e5e;
+  --warm-light: #b8aa96;
+  --teal: #2a6b6b;
+  --teal-light: #4a9494;
+  --teal-pale: #e8f4f4;
+  --amber: #c47c2b;
+  --amber-pale: #fdf3e3;
+  --red-soft: #c25c4b;
+  --border: rgba(26,24,20,0.12);
+  --shadow: rgba(26,24,20,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Karla', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--cream2); }
+::-webkit-scrollbar-thumb { background: var(--teal); }
+
+/* ─── READING PROGRESS ─── */
+#progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 3px; background: var(--teal);
+  width: 0%; z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 3px; left: 0; right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6vw;
+  height: 64px;
+  background: rgba(245,240,232,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.nav-logo span { color: var(--teal); }
+
+.nav-links {
+  display: flex; gap: 32px; list-style: none;
+}
+
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--warm-mid);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--teal); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 120px 6vw 80px;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink2);
+  color: var(--cream);
+}
+
+.hero-bg-text {
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(120px, 22vw, 340px);
+  font-weight: 700;
+  font-style: italic;
+  color: rgba(255,255,255,0.025);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -10px;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal-light);
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--teal-light);
+  flex-shrink: 0;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(52px, 7vw, 92px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  color: var(--cream);
+  margin-bottom: 32px;
+}
+
+h1 em {
+  font-style: italic;
+  color: rgba(245,240,232,0.45);
+}
+
+.hero-desc {
+  font-size: 17px;
+  color: rgba(245,240,232,0.6);
+  font-weight: 300;
+  line-height: 1.75;
+  max-width: 480px;
+  margin-bottom: 48px;
+}
+
+.hero-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.hero-meta-item {
+  padding: 24px 28px;
+  background: var(--ink2);
+}
+
+.meta-l {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal-light);
+  margin-bottom: 6px;
+}
+
+.meta-v {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cream);
+  line-height: 1.4;
+}
+
+.hero-bottom {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 48px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.hero-role-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(42,107,107,0.3);
+  border: 1px solid rgba(74,148,148,0.4);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal-light);
+}
+
+.hero-collab {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,240,232,0.3);
+  letter-spacing: 1px;
+}
+
+/* ─── SECTION BASE ─── */
+section {
+  padding: 120px 6vw;
+  position: relative;
+}
+
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--warm-light);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+
+.section-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  max-width: 60px;
+}
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+
+h2 em {
+  font-style: italic;
+  color: var(--teal);
+}
+
+h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+p {
+  color: var(--warm-mid);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* ─── DIVIDER ─── */
+.hr {
+  height: 1px;
+  background: var(--border);
+  margin: 0 6vw;
+}
+
+/* ─── SECTION: OVERVIEW ─── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: 5fr 3fr;
+  gap: 80px;
+  margin-top: 60px;
+  align-items: start;
+}
+
+.overview-lead {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--ink2);
+  margin-bottom: 24px;
+}
+
+.overview-lead em { font-style: italic; color: var(--teal); }
+
+.stat-stack {
+  display: flex; flex-direction: column; gap: 2px;
+}
+
+.stat-box {
+  background: var(--ink2);
+  color: var(--cream);
+  padding: 32px 28px;
+  display: flex; flex-direction: column;
+}
+
+.stat-box:nth-child(2) { background: var(--teal); }
+.stat-box:nth-child(3) { background: var(--cream2); color: var(--ink); }
+
+.stat-n {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+  letter-spacing: -2px;
+}
+
+.stat-l {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ─── TEAM SECTION ─── */
+.team-section { background: var(--ink2); color: var(--cream); }
+
+.team-section h2 { color: var(--cream); }
+.team-section h2 em { color: var(--teal-light); }
+.team-section .section-num { color: var(--teal-light); }
+.team-section .section-num::after { background: rgba(255,255,255,0.1); }
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.team-card {
+  background: rgba(255,255,255,0.04);
+  padding: 36px 24px;
+  border-top: 3px solid transparent;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.team-card:hover { background: rgba(255,255,255,0.07); }
+
+.team-card.me {
+  background: rgba(42,107,107,0.25);
+  border-top-color: var(--teal-light);
+}
+
+.team-card.me .tc-you {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal-light);
+  background: rgba(74,148,148,0.15);
+  padding: 3px 8px;
+  margin-bottom: 12px;
+}
+
+.tc-you { display: none; }
+
+.tc-role {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.tc-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(245,240,232,0.4);
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+
+.tc-desc {
+  font-size: 13px;
+  color: rgba(245,240,232,0.5);
+  line-height: 1.6;
+}
+
+.collab-note {
+  margin-top: 48px;
+  padding: 32px 40px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+}
+
+.collab-note p {
+  color: rgba(245,240,232,0.55);
+  font-size: 15px;
+}
+
+.collab-note strong { color: var(--teal-light); font-weight: 500; }
+
+/* ─── DISCOVERY / PROBLEM ─── */
+.discovery-section { background: var(--cream2); }
+
+.problem-statement {
+  background: var(--ink2);
+  color: var(--cream);
+  padding: 56px;
+  margin: 60px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.problem-statement::before {
+  content: '"';
+  font-family: 'Playfair Display', serif;
+  font-size: 200px;
+  color: rgba(255,255,255,0.04);
+  position: absolute;
+  top: -40px; left: 24px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.problem-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.65;
+  color: rgba(245,240,232,0.85);
+  position: relative; z-index: 1;
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
+.problem-source {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal-light);
+}
+
+.insight-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 40px;
+}
+
+.insight-card {
+  background: var(--cream);
+  padding: 40px 32px;
+  border-top: 3px solid var(--teal);
+}
+
+.insight-card.amber { border-top-color: var(--amber); }
+.insight-card.red { border-top-color: var(--red-soft); }
+
+.ic-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--warm-light);
+  margin-bottom: 12px;
+}
+
+.ic-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.ic-desc { font-size: 14px; color: var(--warm-mid); line-height: 1.7; }
+
+/* ─── DESIGN DECISIONS ─── */
+.decisions-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  margin-bottom: 80px;
+  align-items: start;
+}
+
+.decision-big-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.decision-card {
+  background: var(--cream2);
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.decision-card.dark {
+  background: var(--ink2);
+}
+
+.decision-card.teal {
+  background: var(--teal);
+  color: var(--cream);
+}
+
+.dc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.dc-tag.t { color: var(--teal); }
+.dc-tag.a { color: var(--amber); }
+.decision-card.dark .dc-tag { color: var(--teal-light); }
+.decision-card.teal .dc-tag { color: rgba(245,240,232,0.6); }
+
+.dc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+
+.decision-card.dark .dc-title { color: var(--cream); }
+.decision-card.teal .dc-title { color: var(--cream); }
+
+.dc-body {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--warm-mid);
+}
+
+.decision-card.dark .dc-body { color: rgba(245,240,232,0.5); }
+.decision-card.teal .dc-body { color: rgba(245,240,232,0.75); }
+
+.dc-impact {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.decision-card.dark .dc-impact { border-top-color: rgba(255,255,255,0.08); }
+.decision-card.teal .dc-impact { border-top-color: rgba(255,255,255,0.2); }
+
+.dc-impact::before { content: '→'; }
+
+/* ─── ACCESSIBILITY ─── */
+.a11y-section { background: var(--teal-pale); }
+
+.a11y-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.a11y-card {
+  background: white;
+  padding: 40px 32px;
+}
+
+.a11y-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--teal-pale);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* ─── PROCESS TIMELINE ─── */
+.process-section { background: var(--cream); }
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  margin-top: 60px;
+  position: relative;
+}
+
+.process-steps::before {
+  content: '';
+  position: absolute;
+  top: 40px; left: 40px; right: 40px;
+  height: 1px;
+  background: var(--border);
+  z-index: 0;
+}
+
+.process-step {
+  padding: 0 20px;
+  position: relative; z-index: 1;
+}
+
+.ps-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--teal);
+  margin: 32px 0 24px;
+}
+
+.ps-dot.active {
+  background: var(--teal);
+  box-shadow: 0 0 0 4px rgba(42,107,107,0.15);
+}
+
+.ps-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+.ps-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.ps-desc { font-size: 13px; color: var(--warm-mid); line-height: 1.6; }
+
+/* ─── RESEARCH ARTIFACTS ─── */
+.artifacts-section { background: var(--ink2); color: var(--cream); }
+.artifacts-section h2 { color: var(--cream); }
+.artifacts-section h2 em { color: var(--teal-light); }
+.artifacts-section .section-num { color: var(--teal-light); }
+.artifacts-section .section-num::after { background: rgba(255,255,255,0.1); }
+.artifacts-section p { color: rgba(245,240,232,0.55); }
+
+.artifacts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.artifact-item {
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 40px;
+  position: relative;
+}
+
+.artifact-item.wide { grid-column: 1/-1; }
+
+.ai-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.ai-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.ai-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(245,240,232,0.4);
+}
+
+.interview-qs {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.iq {
+  font-size: 14px;
+  color: rgba(245,240,232,0.6);
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.iq::before {
+  content: '';
+  position: absolute; left: 0; top: 8px;
+  width: 8px; height: 1px;
+  background: var(--teal-light);
+}
+
+/* ─── PAIN POINTS ─── */
+.pain-section { background: var(--cream2); }
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.pain-card {
+  background: var(--cream);
+  padding: 40px;
+  border-left: 4px solid transparent;
+  display: flex; gap: 24px;
+}
+
+.pain-card:nth-child(1) { border-left-color: var(--red-soft); }
+.pain-card:nth-child(2) { border-left-color: var(--amber); }
+.pain-card:nth-child(3) { border-left-color: var(--teal); }
+.pain-card:nth-child(4) { border-left-color: var(--warm-light); }
+
+.pain-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cream2);
+  flex-shrink: 0;
+  width: 56px;
+}
+
+.pain-content {}
+
+.pain-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.pain-desc { font-size: 14px; color: var(--warm-mid); line-height: 1.7; }
+
+/* ─── DESIGN SYSTEM ─── */
+.ds-section { background: var(--cream); }
+
+.ds-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.ds-card {
+  padding: 36px;
+  border: 1px solid var(--border);
+}
+
+.ds-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--warm-light);
+  margin-bottom: 20px;
+}
+
+/* Color swatches */
+.swatches {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+
+.swatch {
+  width: 40px; height: 40px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* Typography display */
+.type-sample {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.type-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--warm-light);
+  margin-bottom: 4px;
+}
+
+/* ─── HANDOFF ─── */
+.handoff-section { background: var(--teal); color: var(--cream); }
+.handoff-section h2 { color: var(--cream); }
+.handoff-section .section-num { color: rgba(245,240,232,0.5); }
+.handoff-section .section-num::after { background: rgba(255,255,255,0.15); }
+.handoff-section p { color: rgba(245,240,232,0.7); }
+
+.handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.handoff-card {
+  background: rgba(255,255,255,0.08);
+  padding: 40px;
+  border-top: 2px solid rgba(255,255,255,0.15);
+  transition: background 0.2s;
+}
+
+.handoff-card:hover { background: rgba(255,255,255,0.12); }
+
+.hc-icon { font-size: 28px; margin-bottom: 16px; }
+
+.hc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 10px;
+}
+
+.hc-desc {
+  font-size: 13px;
+  color: rgba(245,240,232,0.6);
+  line-height: 1.7;
+}
+
+/* ─── SPRINT BOARD ─── */
+.sprint-section { background: var(--cream2); }
+
+.sprint-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 60px;
+  background: var(--cream);
+}
+
+.sprint-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 18px 24px;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+  color: var(--warm-mid);
+  background: var(--cream2);
+}
+
+.sprint-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--warm-mid);
+  vertical-align: top;
+}
+
+.sprint-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--teal);
+}
+
+.sprint-table tr:hover td { background: rgba(42,107,107,0.03); }
+
+.sprint-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  border-radius: 2px;
+  margin-right: 4px;
+}
+
+.sb-req { background: var(--teal-pale); color: var(--teal); }
+.sb-gui { background: var(--amber-pale); color: var(--amber); }
+.sb-use { background: rgba(194,92,75,0.1); color: var(--red-soft); }
+.sb-eng { background: rgba(26,24,20,0.07); color: var(--ink2); }
+
+/* ─── OUTCOME ─── */
+.outcome-section { background: var(--cream); }
+
+.outcome-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  margin-top: 60px;
+  align-items: start;
+}
+
+.outcome-list {
+  display: flex; flex-direction: column; gap: 0;
+}
+
+.ol-item {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 20px;
+  align-items: flex-start;
+}
+
+.ol-check {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ol-text {
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+
+.ol-text strong { color: var(--ink); font-weight: 600; }
+
+/* ─── LESSONS ─── */
+.lessons-section { background: var(--ink2); color: var(--cream); }
+.lessons-section h2 { color: var(--cream); }
+.lessons-section h2 em { color: var(--teal-light); }
+.lessons-section .section-num { color: var(--teal-light); }
+.lessons-section .section-num::after { background: rgba(255,255,255,0.1); }
+
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.lesson-card {
+  background: rgba(255,255,255,0.04);
+  padding: 40px;
+}
+
+.lesson-card:first-child {
+  background: var(--teal);
+  grid-row: span 2;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.lc-q {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  color: rgba(255,255,255,0.1);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.lc-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.6;
+  color: rgba(245,240,232,0.85);
+  margin-bottom: 24px;
+}
+
+.lesson-card:not(:first-child) .lc-text {
+  font-size: 15px;
+  font-style: normal;
+  font-family: 'Karla', sans-serif;
+  color: rgba(245,240,232,0.55);
+}
+
+.lc-attr {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+}
+
+.lesson-card:first-child .lc-attr { color: rgba(245,240,232,0.6); }
+
+/* ─── NEXT STEPS ─── */
+.nextsteps-section { background: var(--cream2); }
+
+.ns-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.ns-card {
+  background: var(--cream);
+  padding: 40px;
+  border-top: 3px solid var(--border);
+  transition: border-top-color 0.2s;
+}
+
+.ns-card:hover { border-top-color: var(--teal); }
+
+.ns-n {
+  font-family: 'Playfair Display', serif;
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--cream2);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.ns-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.ns-desc { font-size: 14px; color: var(--warm-mid); line-height: 1.7; }
+
+/* ─── CLOSING ─── */
+.closing {
+  background: var(--cream);
+  padding: 120px 6vw;
+  text-align: center;
+}
+
+.closing h2 {
+  font-size: clamp(40px, 6vw, 80px);
+  letter-spacing: -3px;
+  line-height: 1;
+  margin-bottom: 24px;
+}
+
+.closing-sub {
+  font-size: 18px;
+  color: var(--warm-mid);
+  max-width: 560px;
+  margin: 0 auto 60px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.researcher-card {
+  display: inline-block;
+  text-align: left;
+  border: 1px solid var(--border);
+  padding: 40px 56px;
+  background: var(--cream2);
+}
+
+.rc-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.rc-role {
+  font-size: 14px;
+  color: var(--warm-mid);
+  margin-bottom: 20px;
+}
+
+.rc-tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+
+.rc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  background: var(--teal-pale);
+  color: var(--teal);
+  border: 1px solid rgba(42,107,107,0.2);
+}
+
+/* ─── LINK CHIPS ─── */
+.link-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid rgba(42,107,107,0.3);
+  background: var(--teal-pale);
+  color: var(--teal);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.link-chip:hover {
+  background: var(--teal);
+  color: white;
+  border-color: var(--teal);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(42,107,107,0.25);
+}
+.link-chip .chip-icon { font-size: 13px; flex-shrink: 0; }
+.link-chip.dark {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--teal-light);
+}
+.link-chip.dark:hover {
+  background: var(--teal);
+  color: white;
+  border-color: var(--teal);
+}
+.link-chip.amber {
+  background: var(--amber-pale);
+  border-color: rgba(196,124,43,0.3);
+  color: var(--amber);
+}
+.link-chip.amber:hover {
+  background: var(--amber);
+  color: white;
+  border-color: var(--amber);
+}
+.link-chip.ink {
+  background: var(--ink2);
+  border-color: var(--ink2);
+  color: var(--cream);
+}
+.link-chip.ink:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.links-row {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-top: 20px;
+}
+
+/* Resource bar — full-width strip of links */
+.resource-bar {
+  background: var(--cream2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 6vw;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.resource-bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--warm-light);
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+/* ─── ANIMATIONS ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; gap: 40px; }
+  .overview-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr 1fr; }
+  .insight-row, .a11y-grid, .handoff-grid, .ns-grid { grid-template-columns: 1fr; }
+  .decision-big-row, .pain-grid, .artifacts-grid, .outcome-cols,
+  .lessons-grid, .ds-grid { grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: 1fr 1fr; }
+  .process-steps::before { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Check<span>Mate</span></div>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#discovery">Discovery</a></li>
+    <li><a href="#design">Design Process</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+  </ul>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-bg-text">CheckMate</div>
+
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow">Product Design Case Study</div>
+      <h1>From a blank <em>backlog</em> to a shipped product.</h1>
+      <p class="hero-desc">How a cross-functional team of 7 — built with IBM professionals and HCI researchers — designed, validated, and shipped a task management web app in 14 weeks using Agile methodology.</p>
+
+      <div class="hero-meta-grid">
+        <div class="hero-meta-item">
+          <div class="meta-l">Project</div>
+          <div class="meta-v">CheckMate To-Do App</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="meta-l">Duration</div>
+          <div class="meta-v">14 weeks · Biweekly sprints</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="meta-l">Stack</div>
+          <div class="meta-v">React · Open Liberty · SQLite</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="meta-l">Links</div>
+          <div class="meta-v" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:2px;">
+            <a href="https://www.figma.com/proto/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=840-4332&starting-point-node-id=840%3A4332&t=u3Fg35FUxNquK67E-1" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--teal-light); text-decoration:none; border:1px solid rgba(74,148,148,0.3); padding:3px 8px; white-space:nowrap;">▶ Prototype</a>
+            <a href="https://github.com/PavlAvstin/OZ-CSC-480-HCI-521-Fall-2024" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--teal-light); text-decoration:none; border:1px solid rgba(74,148,148,0.3); padding:3px 8px; white-space:nowrap;">⌥ GitHub</a>
+            <a href="https://moxie.cs.oswego.edu:49000/login" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--teal-light); text-decoration:none; border:1px solid rgba(74,148,148,0.3); padding:3px 8px; white-space:nowrap;">⚡ Live App</a>
+          </div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="meta-l">Context</div>
+          <div class="meta-v">HCI 521 / CSC 480 · SUNY Oswego</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="background: rgba(42,107,107,0.15); border: 1px solid rgba(74,148,148,0.2); padding: 40px; margin-bottom: 24px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color: var(--teal-light); margin-bottom:20px;">My Roles</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px; font-size:14px; color:rgba(245,240,232,0.85);">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--teal-light);flex-shrink:0;"></span>
+            Requirements Lead — SRS, IEEE documentation, stakeholder interviews
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; font-size:14px; color:rgba(245,240,232,0.85);">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--teal-light);flex-shrink:0;"></span>
+            Usability Lead — user research, testing plan, affinity diagrams
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; font-size:14px; color:rgba(245,240,232,0.85);">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--teal-light);flex-shrink:0;"></span>
+            Design Contributor — design decisions, user flows, accessibility
+          </div>
+        </div>
+      </div>
+
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(245,240,232,0.3); letter-spacing:1px; line-height:1.8;">
+        Collaborated with:<br>
+        Dayna Pessoa · Aydan Price · Lauren Printy<br>
+        Sam Thompson · Angela Bernabeo · Kristen Rivas
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-role-badge">
+      <span>●</span> Requirements · Usability · Design Lead
+    </div>
+    <div class="hero-collab">IBM Professional Collaboration · Fall 2024</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     QUICK LINKS RESOURCE BAR
+════════════════════════════════════════════ -->
+<div class="resource-bar">
+  <span class="resource-bar-label">Jump to →</span>
+  <a class="link-chip" href="https://www.figma.com/proto/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=840-4332&starting-point-node-id=840%3A4332&t=u3Fg35FUxNquK67E-1" target="_blank" rel="noopener">
+    <span class="chip-icon">▶</span> Live Prototype
+  </a>
+  <a class="link-chip" href="https://www.figma.com/design/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=0-1&t=XQBOELElZ7PzIHcD-0" target="_blank" rel="noopener">
+    <span class="chip-icon">◈</span> Figma Wireframes
+  </a>
+  <a class="link-chip" href="https://www.figma.com/board/LKr1Mf6yCC5WPvgfSb5AuZ/Planning?node-id=0-1&t=HbVVpaVx5EFYIzQP-1" target="_blank" rel="noopener">
+    <span class="chip-icon">✏</span> FigJam Sketches
+  </a>
+  <a class="link-chip" href="https://github.com/PavlAvstin/OZ-CSC-480-HCI-521-Fall-2024" target="_blank" rel="noopener">
+    <span class="chip-icon">⌥</span> GitHub Repo
+  </a>
+  <a class="link-chip" href="https://moxie.cs.oswego.edu:49000/login" target="_blank" rel="noopener">
+    <span class="chip-icon">⚡</span> Live App
+  </a>
+  <a class="link-chip" href="https://docs.google.com/document/d/11B28y6oOiERerFPX_XxYENGVtfmS9Hh0Rd-VsAGmaLA/edit?tab=t.0" target="_blank" rel="noopener">
+    <span class="chip-icon">📖</span> User Manual
+  </a>
+  <a class="link-chip" href="https://docs.google.com/document/d/12R4Os32mwC-Z_mf2vRKDYGAMDoETlb9WyL_Qd3IIKbE/edit?usp=sharing" target="_blank" rel="noopener">
+    <span class="chip-icon">📋</span> SRS Document
+  </a>
+</div>
+
+<!-- ════════════════════════════════════════════
+     OVERVIEW
+════════════════════════════════════════════ -->
+<section id="overview">
+  <div class="section-num">01 — Overview</div>
+  <h2>What we built, <em>and why.</em></h2>
+
+  <div class="overview-grid reveal">
+    <div>
+      <p class="overview-lead">CheckMate is a streamlined web-based task management application designed for <em>everyday people</em> — not power users, not IT teams. Just humans who need to stay organized.</p>
+
+      <p style="margin-bottom:24px;">The brief was deceptively simple: build a to-do list app. But every product designer knows that "simple" hides layers of decisions. Who is the user? What's the minimum viable clarity? How do you avoid building another Trello that intimidates more than it helps?</p>
+
+      <p style="margin-bottom:40px;">This case study walks through how I led the requirements and usability workstreams — connecting stakeholder intent to design decisions, and design decisions to a testable, shippable product — across 7 biweekly Agile sprints with a cross-functional team of 7, including IBM industry professionals.</p>
+
+      <div style="padding: 28px 32px; background: var(--teal-pale); border-left: 3px solid var(--teal);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:10px;">The design principle that guided everything</div>
+        <p style="color:var(--ink2); font-size:16px; font-weight:500; line-height:1.6;">"Simplified and clean with more options available when needed — not features piled up, but <em>intentional</em> layers."</p>
+        <div style="font-size:12px; color:var(--warm-mid); margin-top:8px;">— Direct client quote, Interview 1</div>
+      </div>
+    </div>
+
+    <div class="stat-stack">
+      <div class="stat-box">
+        <div class="stat-n">14</div>
+        <div class="stat-l">Weeks · 7 Sprints</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-n">5+</div>
+        <div class="stat-l">Stakeholder Interviews</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-n" style="color:var(--teal);">7</div>
+        <div class="stat-l" style="color:var(--warm-mid);">Team members across 5 disciplines</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ════════════════════════════════════════════
+     TEAM
+════════════════════════════════════════════ -->
+<section class="team-section">
+  <div class="section-num">02 — The Team</div>
+  <h2>Five disciplines.<br><em>One product.</em></h2>
+  <p style="color:rgba(245,240,232,0.5); max-width:600px; margin-top:12px;">Each team owned a lane but operated as one. My unique position spanning Requirements, Usability, and Design meant I was the connective tissue between what the client wanted, what users needed, and what the dev team built.</p>
+
+  <div class="team-grid reveal">
+    <div class="team-card me">
+      <div class="tc-you">You are here</div>
+      <div class="tc-role">Requirements + Usability + Design</div>
+      <div class="tc-name">Prasanna Lakshmi Guduru</div>
+      <div class="tc-desc">Defined functional requirements (IEEE SRS), led 5+ stakeholder interviews, drove usability testing plan, ensured accessibility standards, authored the User Manual. The bridge between every team.</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-role">GUI</div>
+      <div class="tc-name">Kristen Rivas · Aydan Price</div>
+      <div class="tc-desc">Designed and implemented the front-end interface. Created paper wireframes → digital wireframes → high-fidelity Figma prototype. Applied accessibility standards from the design system.</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-role">Engine / Backend</div>
+      <div class="tc-name">Dayna Pessoa · Sam Thompson</div>
+      <div class="tc-desc">Built and maintained the backend with IBM Open Liberty, SQLite, and JWT security. Implemented microservice architecture and API endpoints that the GUI consumed.</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-role">QA / Testing</div>
+      <div class="tc-name">Angela Bernabeo</div>
+      <div class="tc-desc">Managed quality assurance using JUnit, Selenium, and manual testing. Logged bugs in Miro and GitHub, triaged issues, and coordinated sprint-based test cycles.</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-role">Requirements</div>
+      <div class="tc-name">Lauren Printy</div>
+      <div class="tc-desc">Co-authored the SRS documentation, conducted client interviews, and maintained the living requirements backlog updated through each sprint with new stakeholder information.</div>
+    </div>
+  </div>
+
+  <div class="collab-note reveal">
+    <p><strong>Why this team structure mattered:</strong> Most student projects collapse because teams silo. Here, I made it a point to schedule cross-team check-ins every sprint. When the GUI team made layout decisions, I was in the room so requirements weren't violated. When the backend made schema choices, I fed back usability implications. This is what <strong>design leadership</strong> looks like in practice — not just making screens, but being the person who reads every room.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     DISCOVERY
+════════════════════════════════════════════ -->
+<section class="discovery-section" id="discovery">
+  <div class="section-num">03 — Discovery</div>
+  <h2>The client said "simple." <em>We asked what that meant.</em></h2>
+
+  <div class="problem-statement reveal">
+    <p class="problem-text">"Monday is too busy. Trello is cool but too simple. I want something clean — but not basic. Nail down the base features. Don't let it become a monster."</p>
+    <div class="problem-source">— Client, Stakeholder Interview 1</div>
+  </div>
+
+  <p style="max-width:720px; margin-bottom:40px;">This single quote became our north star. Before a single wireframe was drawn, I ran 5+ structured stakeholder interviews — with a deliberate strategy: ask about pain, not features. The questions were organized by domain (Engine, GUI, Usability, QA) to ensure every team had the signal they needed to make decisions without coming back for clarification.</p>
+
+  <div class="insight-row reveal">
+    <div class="insight-card">
+      <div class="ic-num">Interview Finding 01</div>
+      <div class="ic-title">Users want priority and due dates — not labels</div>
+      <div class="ic-desc">When asked about organization, users consistently described urgency ("I need to remember this is due tomorrow") rather than taxonomy. This shifted our priority model from tags-first to deadline + priority-first.</div>
+    </div>
+    <div class="insight-card amber">
+      <div class="ic-num">Interview Finding 02</div>
+      <div class="ic-title">Sharing is wanted — but not the primary flow</div>
+      <div class="ic-desc">Clients wanted task sharing ("with my family") but not as a core feature. This helped us scope: build the sharing infrastructure, but don't design the UI around it. Sharing is a power feature, not the entry point.</div>
+    </div>
+    <div class="insight-card red">
+      <div class="ic-num">Interview Finding 03</div>
+      <div class="ic-title">Calendar is a stretch goal — integrate, don't duplicate</div>
+      <div class="ic-desc">Users wanted calendar integration but understood it adds complexity. Client explicitly asked: "Don't build a calendar inside the app if it means breaking the simplicity." This became a documented scope boundary in the SRS.</div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ════════════════════════════════════════════
+     REQUIREMENTS / PROCESS
+════════════════════════════════════════════ -->
+<section class="process-section">
+  <div class="section-num">04 — Requirements Process</div>
+  <h2>Vision to spec, <em>without losing either.</em></h2>
+  <p style="max-width:640px; margin-top:12px;">The IEEE 29148-2018 SRS document wasn't just a deliverable — it was the team's shared source of truth. Every design decision, every feature built, every test case written traced back to it. Here's how we got from client conversation to specification.</p>
+
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="ps-dot active"></div>
+      <div class="ps-num">01</div>
+      <div class="ps-title">Stakeholder Interviews</div>
+      <div class="ps-desc">5+ sessions. Domain-organized questions. Recorded and transcribed for all teams to reference.</div>
+    </div>
+    <div class="process-step">
+      <div class="ps-dot active"></div>
+      <div class="ps-num">02</div>
+      <div class="ps-title">Requirements Synthesis</div>
+      <div class="ps-desc">Interview insights categorized into functional requirements, constraints, and stretch goals.</div>
+    </div>
+    <div class="process-step">
+      <div class="ps-dot active"></div>
+      <div class="ps-num">03</div>
+      <div class="ps-title">SRS Documentation</div>
+      <div class="ps-desc">IEEE 29148 format. Living document updated each sprint as new information emerged.</div>
+    </div>
+    <div class="process-step">
+      <div class="ps-dot"></div>
+      <div class="ps-num">04</div>
+      <div class="ps-title">Cross-Team Review</div>
+      <div class="ps-desc">Requirements reviewed with GUI, Engine, and QA to verify implementability before sprint planning.</div>
+    </div>
+    <div class="process-step">
+      <div class="ps-dot"></div>
+      <div class="ps-num">05</div>
+      <div class="ps-title">Agile Iteration</div>
+      <div class="ps-desc">Requirements evolved. Each sprint retrospective fed back into spec updates — no requirement was ever "frozen."</div>
+    </div>
+  </div>
+
+  <div class="decision-big-row reveal" style="margin-top:60px;">
+    <div class="decision-card dark">
+      <div class="dc-tag">Requirements Decision</div>
+      <div class="dc-title">Scope the "shared lists" feature without killing it</div>
+      <div class="dc-body">The client wanted sharing but signaled it wasn't high priority. Rather than deprioritizing it entirely, I documented it as an in-scope feature with a reduced implementation footprint — build the "Shared With Me" page and sharing infrastructure, but don't design complex permission models. This preserved the feature while protecting the team's velocity.</div>
+      <div class="dc-impact" style="color:var(--teal-light);">Result: Sharing shipped. Permission complexity didn't slow us down.</div>
+    </div>
+    <div class="decision-card">
+      <div class="dc-tag t">Documentation Decision</div>
+      <div class="dc-title">Two user manuals — because documentation is a design artifact</div>
+      <div class="dc-body">We produced two versions of the User Manual: an early-sprint version for internal reference and a final polished version for delivery. I treated the manual not as an afterthought but as a design handoff artifact — a reflection of the interface's clarity. If something was hard to document, that was a signal the UI needed rethinking.</div>
+      <div class="dc-impact" style="color:var(--teal);">Result: The manual doubled as a UX audit tool.</div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ════════════════════════════════════════════
+     DESIGN PROCESS
+════════════════════════════════════════════ -->
+<section id="design" style="background:var(--cream2);">
+  <div class="section-num">05 — Design Process</div>
+  <h2>From blank paper <em>to shipped prototype.</em></h2>
+  <p style="max-width:680px; margin-top:12px;">I wasn't just adjacent to the design — I was in it. From sketching the first paper wireframes through to the high-fidelity Figma prototype, I contributed across every phase of the design process. Here's how the product evolved, and the thinking behind each jump.</p>
+
+  <!-- PHASE BANNER -->
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:60px;" class="reveal">
+    <div style="background:var(--ink2); color:var(--cream); padding:32px 28px; border-top:3px solid var(--warm-light);">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--warm-light); margin-bottom:12px;">Phase 01</div>
+      <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; margin-bottom:8px; color:var(--cream);">Paper Wireframes</div>
+      <div style="font-size:13px; color:rgba(245,240,232,0.5); line-height:1.6;">Rapid ideation. Layout exploration. No commitment — just possibility.</div>
+    </div>
+    <div style="background:var(--ink2); color:var(--cream); padding:32px 28px; border-top:3px solid var(--teal);">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal-light); margin-bottom:12px;">Phase 02</div>
+      <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; margin-bottom:8px; color:var(--cream);">Digital Wireframes</div>
+      <div style="font-size:13px; color:rgba(245,240,232,0.5); line-height:1.6;">Structure defined. Flow mapped. Layout committed to screen.</div>
+    </div>
+    <div style="background:var(--ink2); color:var(--cream); padding:32px 28px; border-top:3px solid var(--amber);">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--amber); margin-bottom:12px;">Phase 03</div>
+      <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; margin-bottom:8px; color:var(--cream);">Lo-Fi Prototype</div>
+      <div style="font-size:13px; color:rgba(245,240,232,0.5); line-height:1.6;">Interactivity added. Real user flow testable for the first time.</div>
+    </div>
+    <div style="background:var(--teal); color:var(--cream); padding:32px 28px; border-top:3px solid rgba(255,255,255,0.4);">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:rgba(245,240,232,0.6); margin-bottom:12px;">Phase 04</div>
+      <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; margin-bottom:8px; color:var(--cream);">Hi-Fi Prototype</div>
+      <div style="font-size:13px; color:rgba(245,240,232,0.75); line-height:1.6;">Full fidelity. Animations. Real design system. Stakeholder-ready.</div>
+    </div>
+  </div>
+
+  <!-- PHASE 01: PAPER WIREFRAMES -->
+  <div style="margin-top:80px;" class="reveal">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--warm-light); margin-bottom:16px;">Phase 01 — Paper Wireframes</div>
+        <h3 style="font-size:28px; letter-spacing:-1px; margin-bottom:20px;">The messy, essential first step.</h3>
+        <p style="margin-bottom:20px;">Before touching Figma, we went analog. Paper wireframes were the team's shared brainstorming space — fast, low-stakes, and deliberately rough. The goal wasn't perfection; it was to externalize competing ideas quickly enough to argue about them in the room.</p>
+        <p style="margin-bottom:20px;">My contribution at this stage was less about drawing layouts and more about <strong style="color:var(--ink2); font-weight:600;">translating requirements into spatial decisions</strong> — making sure the components we'd committed to in the SRS actually had a logical home on the page.</p>
+        <p>Key questions we were wrestling with on paper:</p>
+        <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:14px 18px; background:var(--cream); border-left:3px solid var(--warm-light);">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--warm-light); flex-shrink:0; margin-top:2px;">Q1</span>
+            <span style="font-size:14px; color:var(--ink2);">Should task details be hidden by tabs, revealed by click, or always-visible in a panel?</span>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:14px 18px; background:var(--cream); border-left:3px solid var(--warm-light);">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--warm-light); flex-shrink:0; margin-top:2px;">Q2</span>
+            <span style="font-size:14px; color:var(--ink2);">Pop-ups or a persistent side panel for task creation and editing?</span>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:14px 18px; background:var(--cream); border-left:3px solid var(--warm-light);">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--warm-light); flex-shrink:0; margin-top:2px;">Q3</span>
+            <span style="font-size:14px; color:var(--ink2);">How should the overall content hierarchy be framed — what's primary, what's secondary?</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paper wireframe visual representation -->
+      <div>
+        <div style="background:var(--cream); border:1px solid var(--border); padding:32px; font-family:'JetBrains Mono',monospace;">
+          <div style="font-size:10px; color:var(--warm-light); letter-spacing:2px; margin-bottom:20px;">PAPER WIREFRAME — ITERATION 1</div>
+
+          <!-- Sketchy wireframe representation -->
+          <div style="border:2px solid var(--border); padding:16px; position:relative; background:#fff;">
+            <div style="font-size:9px; color:var(--warm-light); margin-bottom:12px; letter-spacing:1px;">HEADER / NAV BAR</div>
+            <div style="display:grid; grid-template-columns:140px 1fr 180px; gap:8px; min-height:300px;">
+              <!-- Left panel sketch -->
+              <div style="border:1px dashed var(--border); padding:10px; background:rgba(0,0,0,0.02);">
+                <div style="font-size:8px; color:var(--warm-light); margin-bottom:8px; letter-spacing:1px;">LEFT NAV</div>
+                <div style="height:10px; background:var(--border); border-radius:1px; margin-bottom:6px;"></div>
+                <div style="height:10px; background:var(--teal-pale); border-radius:1px; margin-bottom:6px;"></div>
+                <div style="height:10px; background:var(--border); border-radius:1px; margin-bottom:16px;"></div>
+                <div style="font-size:8px; color:var(--warm-light); margin-bottom:6px; letter-spacing:1px;">PROJECTS</div>
+                <div style="height:8px; background:var(--border); border-radius:1px; margin-bottom:4px;"></div>
+                <div style="height:8px; background:var(--border); border-radius:1px; margin-bottom:4px;"></div>
+                <div style="height:8px; background:var(--border); border-radius:1px; margin-bottom:4px;"></div>
+                <div style="height:8px; width:50%; background:var(--teal-pale); border-radius:1px; margin-top:12px;"></div>
+              </div>
+              <!-- Main content sketch -->
+              <div style="border:1px dashed var(--border); padding:10px;">
+                <div style="font-size:8px; color:var(--warm-light); margin-bottom:8px; letter-spacing:1px;">MY TASKS</div>
+                <div style="height:28px; background:var(--teal-pale); border-radius:2px; margin-bottom:8px; display:flex; align-items:center; padding:0 8px;">
+                  <div style="font-size:8px; color:var(--teal);">+ CREATE NEW TASK</div>
+                </div>
+                <div style="height:1px; background:var(--border); margin-bottom:8px;"></div>
+                <div style="display:flex; gap:6px; margin-bottom:6px;">
+                  <div style="width:12px; height:12px; border:1px solid var(--border); border-radius:2px;"></div>
+                  <div style="flex:1; height:12px; background:var(--border); border-radius:1px;"></div>
+                  <div style="width:40px; height:12px; background:var(--border); border-radius:1px;"></div>
+                </div>
+                <div style="display:flex; gap:6px; margin-bottom:6px;">
+                  <div style="width:12px; height:12px; border:1px solid var(--border); border-radius:2px;"></div>
+                  <div style="flex:1; height:12px; background:var(--border); border-radius:1px;"></div>
+                  <div style="width:40px; height:12px; background:var(--amber-pale); border-radius:1px;"></div>
+                </div>
+                <div style="display:flex; gap:6px; margin-bottom:6px;">
+                  <div style="width:12px; height:12px; border:1px solid var(--border); border-radius:2px;"></div>
+                  <div style="flex:1; height:12px; background:var(--border); border-radius:1px;"></div>
+                  <div style="width:40px; height:12px; background:var(--border); border-radius:1px;"></div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <div style="width:12px; height:12px; border:1px solid var(--border); border-radius:2px;"></div>
+                  <div style="flex:1; height:12px; background:var(--border); border-radius:1px;"></div>
+                  <div style="width:40px; height:12px; background:rgba(194,92,75,0.15); border-radius:1px;"></div>
+                </div>
+              </div>
+              <!-- Right panel sketch -->
+              <div style="border:1px dashed var(--border); padding:10px; background:rgba(0,0,0,0.02);">
+                <div style="font-size:8px; color:var(--warm-light); margin-bottom:8px; letter-spacing:1px;">TASK DETAILS</div>
+                <div style="height:18px; background:var(--border); border-radius:1px; margin-bottom:8px;"></div>
+                <div style="height:10px; background:var(--border); border-radius:1px; margin-bottom:4px;"></div>
+                <div style="height:10px; background:var(--border); border-radius:1px; margin-bottom:16px;"></div>
+                <div style="height:8px; width:60%; background:var(--teal-pale); border-radius:1px; margin-bottom:8px;"></div>
+                <div style="height:24px; background:var(--border); border-radius:2px; margin-bottom:8px;"></div>
+                <div style="height:8px; width:60%; background:var(--teal-pale); border-radius:1px; margin-bottom:8px;"></div>
+                <div style="display:flex; gap:4px; margin-bottom:8px;">
+                  <div style="flex:1; height:20px; background:rgba(194,92,75,0.15); border-radius:2px;"></div>
+                  <div style="flex:1; height:20px; background:var(--amber-pale); border-radius:2px;"></div>
+                  <div style="flex:1; height:20px; background:var(--teal-pale); border-radius:2px;"></div>
+                </div>
+                <div style="height:28px; background:var(--teal); border-radius:2px; margin-top:16px;"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px; font-size:9px; color:var(--warm-light); letter-spacing:1px;">↑ Three-panel layout emerged here — before a single Figma frame was opened</div>
+          <div class="links-row" style="margin-top:16px;">
+            <a class="link-chip" href="https://www.figma.com/board/LKr1Mf6yCC5WPvgfSb5AuZ/Planning?node-id=0-1&t=HbVVpaVx5EFYIzQP-1" target="_blank" rel="noopener">
+              <span class="chip-icon">✏</span> View FigJam Sketches
+            </a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 02: DIGITAL WIREFRAMES -->
+  <div style="margin-top:100px; border-top:1px solid var(--border); padding-top:80px;" class="reveal">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;">
+
+      <!-- Digital wireframe visual -->
+      <div>
+        <div style="background:var(--cream); border:1px solid var(--border); padding:32px; font-family:'JetBrains Mono',monospace;">
+          <div style="font-size:10px; color:var(--teal); letter-spacing:2px; margin-bottom:20px;">DIGITAL WIREFRAME — ITERATION 2</div>
+
+          <div style="border:1px solid var(--border); background:#fff; padding:0; overflow:hidden;">
+            <!-- App chrome -->
+            <div style="height:36px; background:var(--ink2); display:flex; align-items:center; padding:0 16px; gap:8px;">
+              <div style="width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.15);"></div>
+              <div style="width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.15);"></div>
+              <div style="width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.15);"></div>
+              <div style="flex:1; height:16px; background:rgba(255,255,255,0.06); border-radius:2px; margin-left:12px;"></div>
+            </div>
+            <!-- Content -->
+            <div style="display:grid; grid-template-columns:130px 1fr 170px; min-height:280px;">
+              <!-- Sidebar -->
+              <div style="border-right:1px solid var(--border); padding:16px; background:#fafafa;">
+                <div style="font-size:8px; font-weight:600; color:var(--ink); margin-bottom:10px;">MY TASKS</div>
+                <div style="height:8px; background:var(--teal-pale); border-radius:8px; margin-bottom:6px;"></div>
+                <div style="height:8px; background:var(--border); border-radius:8px; margin-bottom:6px;"></div>
+                <div style="height:8px; background:var(--border); border-radius:8px; margin-bottom:20px;"></div>
+                <div style="font-size:8px; font-weight:600; color:var(--ink); margin-bottom:8px;">MY PROJECTS</div>
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+                  <div style="width:6px; height:6px; border-radius:50%; background:var(--teal);"></div>
+                  <div style="height:8px; flex:1; background:var(--border); border-radius:8px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+                  <div style="width:6px; height:6px; border-radius:50%; background:var(--amber);"></div>
+                  <div style="height:8px; flex:1; background:var(--border); border-radius:8px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="width:6px; height:6px; border-radius:50%; background:var(--red-soft);"></div>
+                  <div style="height:8px; flex:1; background:var(--border); border-radius:8px;"></div>
+                </div>
+              </div>
+              <!-- Main -->
+              <div style="padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <div style="height:14px; width:80px; background:var(--ink2); border-radius:2px;"></div>
+                  <div style="height:24px; width:110px; background:var(--teal); border-radius:2px; display:flex; align-items:center; justify-content:center;">
+                    <div style="font-size:8px; color:white; letter-spacing:1px;">+ CREATE TASK</div>
+                  </div>
+                </div>
+                <div style="height:1px; background:var(--border); margin-bottom:10px;"></div>
+                <div style="display:grid; grid-template-columns:16px 1fr 60px 50px; gap:8px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.04);">
+                  <div style="width:14px; height:14px; border:1.5px solid var(--border); border-radius:3px;"></div>
+                  <div style="height:10px; background:var(--border); border-radius:6px;"></div>
+                  <div style="height:10px; background:var(--border); border-radius:6px;"></div>
+                  <div style="height:16px; background:rgba(194,92,75,0.2); border-radius:10px;"></div>
+                </div>
+                <div style="display:grid; grid-template-columns:16px 1fr 60px 50px; gap:8px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.04); background:var(--teal-pale);">
+                  <div style="width:14px; height:14px; border:1.5px solid var(--teal); border-radius:3px; background:var(--teal); display:flex; align-items:center; justify-content:center;">
+                    <div style="color:white; font-size:9px; font-weight:700;">✓</div>
+                  </div>
+                  <div style="height:10px; background:rgba(42,107,107,0.2); border-radius:6px; text-decoration:line-through;"></div>
+                  <div style="height:10px; background:rgba(42,107,107,0.15); border-radius:6px;"></div>
+                  <div style="height:16px; background:rgba(42,107,107,0.15); border-radius:10px;"></div>
+                </div>
+                <div style="display:grid; grid-template-columns:16px 1fr 60px 50px; gap:8px; align-items:center; padding:8px 0;">
+                  <div style="width:14px; height:14px; border:1.5px solid var(--border); border-radius:3px;"></div>
+                  <div style="height:10px; background:var(--border); border-radius:6px;"></div>
+                  <div style="height:10px; background:var(--border); border-radius:6px;"></div>
+                  <div style="height:16px; background:var(--amber-pale); border-radius:10px;"></div>
+                </div>
+              </div>
+              <!-- Right panel -->
+              <div style="border-left:1px solid var(--border); padding:16px; background:#fafafa;">
+                <div style="font-size:8px; font-weight:600; color:var(--ink); margin-bottom:12px;">TASK DETAILS</div>
+                <div style="font-size:7px; color:var(--warm-light); margin-bottom:4px;">TITLE</div>
+                <div style="height:20px; background:white; border:1px solid var(--border); border-radius:2px; margin-bottom:10px;"></div>
+                <div style="font-size:7px; color:var(--warm-light); margin-bottom:4px;">DUE DATE</div>
+                <div style="height:20px; background:white; border:1px solid var(--border); border-radius:2px; margin-bottom:10px;"></div>
+                <div style="font-size:7px; color:var(--warm-light); margin-bottom:6px;">PRIORITY</div>
+                <div style="display:flex; gap:3px; margin-bottom:16px;">
+                  <div style="flex:1; height:18px; background:rgba(194,92,75,0.15); border-radius:2px; display:flex; align-items:center; justify-content:center;"><div style="font-size:6px; color:var(--red-soft);">HIGH</div></div>
+                  <div style="flex:1; height:18px; background:var(--amber-pale); border-radius:2px; display:flex; align-items:center; justify-content:center;"><div style="font-size:6px; color:var(--amber);">MED</div></div>
+                  <div style="flex:1; height:18px; background:var(--teal-pale); border-radius:2px; display:flex; align-items:center; justify-content:center;"><div style="font-size:6px; color:var(--teal);">LOW</div></div>
+                </div>
+                <div style="height:22px; background:var(--teal); border-radius:2px; display:flex; align-items:center; justify-content:center;">
+                  <div style="font-size:8px; color:white; letter-spacing:1px;">SAVE</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px; font-size:9px; color:var(--teal); letter-spacing:1px;">↑ Three-panel solidified. Flow and placement locked in. Identity taking shape.</div>
+          <div class="links-row" style="margin-top:16px;">
+            <a class="link-chip" href="https://www.figma.com/design/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=0-1&t=XQBOELElZ7PzIHcD-0" target="_blank" rel="noopener">
+              <span class="chip-icon">◈</span> View Figma Wireframes
+            </a>
+          </div>
+      </div>
+
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:16px;">Phase 02 — Digital Wireframes</div>
+        <h3 style="font-size:28px; letter-spacing:-1px; margin-bottom:20px;">Structure meets placement.</h3>
+        <p style="margin-bottom:20px;">Moving to Figma, the three-panel layout that emerged from paper became the foundational grid of the application. My role here was ensuring the layout honored the requirements I'd written — every SRS-defined component needed a visible home.</p>
+        <p style="margin-bottom:24px;">I was conscious of two competing risks: designing something so generic it felt like Todoist, or so unique that familiar patterns were lost. We studied Trello and Todoist deliberately — not to copy them, but to understand where users' mental models lived, and build from there.</p>
+
+        <div style="background:var(--ink2); padding:28px; margin-bottom:24px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal-light); margin-bottom:12px;">MY DESIGN CONTRIBUTION AT THIS STAGE</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; gap:12px; font-size:14px; color:rgba(245,240,232,0.75);">
+              <span style="color:var(--teal-light); flex-shrink:0;">→</span>
+              Defined persistent left panel with My Tasks, Recently Deleted, My Projects, Shared With Me hierarchy
+            </div>
+            <div style="display:flex; gap:12px; font-size:14px; color:rgba(245,240,232,0.75);">
+              <span style="color:var(--teal-light); flex-shrink:0;">→</span>
+              Decided right panel should be persistent (not a popup) — users shouldn't lose context to edit a task
+            </div>
+            <div style="display:flex; gap:12px; font-size:14px; color:rgba(245,240,232,0.75);">
+              <span style="color:var(--teal-light); flex-shrink:0;">→</span>
+              Specified checkbox + title + due date + priority as the minimum viable task row — no more, no less
+            </div>
+            <div style="display:flex; gap:12px; font-size:14px; color:rgba(245,240,232,0.75);">
+              <span style="color:var(--teal-light); flex-shrink:0;">→</span>
+              Pushed for "Create New Task" button prominence after noting its discoverability risk in requirements review
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:20px 24px; background:var(--cream); border:1px solid var(--border);">
+          <div style="font-size:13px; font-style:italic; color:var(--ink2); line-height:1.6;">"The team remained cognizant of existing to-do list designs (Trello, Todoist) while maintaining a unique visual identity — a good frame of reference for standard element placement and association."</div>
+          <div style="font-size:12px; color:var(--warm-light); margin-top:8px;">— Case study documentation, Digital Wireframe phase</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 03: LO-FI PROTOTYPE -->
+  <div style="margin-top:100px; border-top:1px solid var(--border); padding-top:80px;" class="reveal">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--amber); margin-bottom:16px;">Phase 03 — Low-Fidelity Prototype</div>
+        <h3 style="font-size:28px; letter-spacing:-1px; margin-bottom:20px;">First time the design breathed.</h3>
+        <p style="margin-bottom:20px;">The lo-fi prototype was the first version of CheckMate you could actually <em>use</em> — interactive checkboxes, hover states, basic page transitions. For the first time, users could walk through a real flow instead of imagining it from static frames.</p>
+        <p style="margin-bottom:24px;">The defined user flow for testing: <strong style="color:var(--ink2); font-weight:600;">Login → Create Project → Add Task → Edit Description → Delete Task.</strong> Five steps that covered the entire core value loop of the product.</p>
+
+        <div style="padding:28px; background:var(--teal-pale); border:1px solid rgba(42,107,107,0.15); margin-bottom:24px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal); margin-bottom:12px;">FEATURES INTRODUCED FOR USER TESTING</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; gap:10px; font-size:14px; color:var(--ink2);">
+              <span style="color:var(--teal); font-weight:700;">+</span>
+              Interactive checkboxes with state change
+            </div>
+            <div style="display:flex; gap:10px; font-size:14px; color:var(--ink2);">
+              <span style="color:var(--teal); font-weight:700;">+</span>
+              Hover states on task rows and buttons
+            </div>
+            <div style="display:flex; gap:10px; font-size:14px; color:var(--ink2);">
+              <span style="color:var(--teal); font-weight:700;">+</span>
+              Completed tasks view (separate from active)
+            </div>
+            <div style="display:flex; gap:10px; font-size:14px; color:var(--ink2);">
+              <span style="color:var(--teal); font-weight:700;">+</span>
+              Restore from completed — ability to bring tasks back
+            </div>
+            <div style="display:flex; gap:10px; font-size:14px; color:var(--ink2);">
+              <span style="color:var(--teal); font-weight:700;">+</span>
+              Priority selector (Low / Medium / High) with visual differentiation
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:20px 24px; background:rgba(196,124,43,0.08); border-left:3px solid var(--amber);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--amber); margin-bottom:8px;">DESIGN DECISION AT THIS STAGE</div>
+          <p style="font-size:14px; color:var(--ink2); line-height:1.65;">Time limitations meant we couldn't test every feature we'd prototyped. Rather than test a diluted version of everything, I advocated for scoping the test to the core user flow only — login through delete. Better to get rich signal on 5 tasks than shallow data on 15.</p>
+        </div>
+        <div class="links-row">
+          <a class="link-chip" href="https://www.figma.com/design/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=0-1&t=XQBOELElZ7PzIHcD-0" target="_blank" rel="noopener">
+            <span class="chip-icon">◈</span> View Lo-Fi in Figma
+          </a>
+          <a class="link-chip" href="https://docs.google.com/document/d/1i-fUfkOxltjOwh3GldsWsaHDKplJdekDR866CqMVcRQ/edit?usp=sharing" target="_blank" rel="noopener">
+            <span class="chip-icon">🧪</span> Usability Testing Plan
+          </a>
+        </div>
+      </div>
+
+      <!-- User flow diagram -->
+      <div style="background:var(--cream); border:1px solid var(--border); padding:32px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--warm-light); letter-spacing:2px; margin-bottom:24px;">CORE USER FLOW — LO-FI TEST</div>
+
+        <div style="display:flex; flex-direction:column; gap:0;">
+          <div style="display:flex; align-items:center; gap:0;">
+            <div style="background:var(--teal); color:white; padding:16px 20px; font-size:13px; font-weight:600; flex:1;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:rgba(255,255,255,0.6); letter-spacing:2px; margin-bottom:4px;">STEP 01</div>
+              Login / Create Account
+            </div>
+            <div style="width:32px; height:2px; background:var(--teal);"></div>
+          </div>
+          <div style="width:1px; height:16px; background:var(--border); margin-left:50%;"></div>
+          <div style="display:flex; align-items:center; gap:0;">
+            <div style="background:var(--cream2); border:1px solid var(--border); padding:16px 20px; font-size:13px; flex:1;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--warm-light); letter-spacing:2px; margin-bottom:4px;">STEP 02</div>
+              Create a Project
+            </div>
+          </div>
+          <div style="width:1px; height:16px; background:var(--border); margin-left:50%;"></div>
+          <div style="display:flex; align-items:center; gap:0;">
+            <div style="background:var(--cream2); border:1px solid var(--border); padding:16px 20px; font-size:13px; flex:1;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--warm-light); letter-spacing:2px; margin-bottom:4px;">STEP 03</div>
+              Add a Task
+            </div>
+          </div>
+          <div style="width:1px; height:16px; background:var(--border); margin-left:50%;"></div>
+          <div style="display:flex; align-items:center; gap:0;">
+            <div style="background:var(--cream2); border:1px solid var(--border); padding:16px 20px; font-size:13px; flex:1;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--warm-light); letter-spacing:2px; margin-bottom:4px;">STEP 04</div>
+              Edit Task Description
+            </div>
+          </div>
+          <div style="width:1px; height:16px; background:var(--border); margin-left:50%;"></div>
+          <div style="display:flex; align-items:center; gap:0;">
+            <div style="background:var(--ink2); color:white; padding:16px 20px; font-size:13px; font-weight:600; flex:1;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:rgba(255,255,255,0.5); letter-spacing:2px; margin-bottom:4px;">STEP 05</div>
+              Delete Task (+ Recover)
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; padding:16px; background:var(--teal-pale); border:1px solid rgba(42,107,107,0.1);">
+          <div style="font-size:12px; color:var(--teal); line-height:1.6;">This flow covers 100% of the core user value proposition. Everything else is an enhancement.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 04: HI-FI -->
+  <div style="margin-top:100px; border-top:1px solid var(--border); padding-top:80px;" class="reveal">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:16px; text-align:center;">Phase 04 — High-Fidelity Prototype</div>
+    <h3 style="font-size:36px; font-family:'Playfair Display',serif; font-weight:700; letter-spacing:-1.5px; text-align:center; margin-bottom:16px;">Full fidelity. Real design system. <em style="font-style:italic; color:var(--teal);">Stakeholder-ready.</em></h3>
+    <p style="text-align:center; max-width:640px; margin:0 auto 60px; color:var(--warm-mid);">The high-fidelity prototype incorporated everything learned from testing — and made several hard scope calls. Here's what changed from lo-fi, and why each decision was made.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:2px;" class="reveal">
+      <div style="background:var(--ink2); padding:40px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--red-soft); margin-bottom:12px;">REMOVED</div>
+        <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--cream); margin-bottom:12px;">Subtasks & Tags</div>
+        <p style="font-size:14px; color:rgba(245,240,232,0.5); line-height:1.7;">These existed in the lo-fi. Usability data and time pressure both pointed the same direction — they added cognitive overhead without adding value for our "everyday person" target user. Removing them was a team decision I championed based on what I was hearing in testing sessions.</p>
+        <div style="margin-top:20px; padding:16px; background:rgba(194,92,75,0.1); border-left:2px solid var(--red-soft);">
+          <div style="font-size:13px; color:var(--red-soft);">Result: Cleaner task creation. Faster time-to-first-task.</div>
+        </div>
+      </div>
+      <div style="background:var(--cream); padding:40px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal); margin-bottom:12px;">ADDED</div>
+        <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--ink); margin-bottom:12px;">Delete Confirmation Popup</div>
+        <p style="font-size:14px; color:var(--warm-mid); line-height:1.7;">Multiple users in testing expressed anxiety about accidental deletion. This wasn't a feature request — it was an observed emotion. The confirmation popup was a direct response to that fear. Good design answers feelings, not just use cases.</p>
+        <div style="margin-top:20px; padding:16px; background:var(--teal-pale); border-left:2px solid var(--teal);">
+          <div style="font-size:13px; color:var(--teal);">Result: Users explicitly praised this in post-test feedback.</div>
+        </div>
+      </div>
+      <div style="background:var(--cream2); padding:40px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--amber); margin-bottom:12px;">ENHANCED</div>
+        <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--ink); margin-bottom:12px;">Interactivity & Animations</div>
+        <p style="font-size:14px; color:var(--warm-mid); line-height:1.7;">Page transitions, hover state polish, panel slide animations, and checkbox completion micro-interactions were all added in the hi-fi pass. These aren't decorative — they provide feedback, communicate state, and make the app feel intentional rather than assembled.</p>
+        <div style="margin-top:20px; padding:16px; background:var(--amber-pale); border-left:2px solid var(--amber);">
+          <div style="font-size:13px; color:var(--amber);">Result: Product felt "finished" — not just functional.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hi-fi mockup representation -->
+    <div style="margin-top:48px; background:var(--ink2); padding:40px; border:1px solid rgba(255,255,255,0.06);" class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal-light); margin-bottom:24px; text-align:center;">HIGH-FIDELITY PROTOTYPE — FINAL STATE</div>
+
+      <!-- Browser mockup shell -->
+      <div style="max-width:900px; margin:0 auto; background:#1e1e2e; border-radius:8px; overflow:hidden; box-shadow:0 40px 80px rgba(0,0,0,0.5);">
+        <div style="height:40px; background:#2a2a3e; display:flex; align-items:center; padding:0 16px; gap:8px; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="width:10px; height:10px; border-radius:50%; background:#ff5f57;"></div>
+          <div style="width:10px; height:10px; border-radius:50%; background:#febc2e;"></div>
+          <div style="width:10px; height:10px; border-radius:50%; background:#28c840;"></div>
+          <div style="flex:1; height:20px; background:rgba(255,255,255,0.05); border-radius:4px; margin:0 16px; display:flex; align-items:center; padding:0 12px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:1px;">checkmate.app/tasks</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:200px 1fr 240px; height:380px;">
+          <!-- Sidebar -->
+          <div style="background:#1a1a2a; padding:20px; border-right:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
+              <div style="width:24px; height:24px; background:var(--teal); border-radius:4px; display:flex; align-items:center; justify-content:center;">
+                <div style="color:white; font-size:11px; font-weight:700;">✓</div>
+              </div>
+              <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:white;">CheckMate</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:2px; margin-bottom:20px;">
+              <div style="padding:8px 12px; background:var(--teal); border-radius:4px; font-size:11px; font-weight:600; color:white;">My Tasks</div>
+              <div style="padding:8px 12px; border-radius:4px; font-size:11px; color:rgba(255,255,255,0.4);">Completed</div>
+              <div style="padding:8px 12px; border-radius:4px; font-size:11px; color:rgba(255,255,255,0.4);">Recently Deleted</div>
+              <div style="padding:8px 12px; border-radius:4px; font-size:11px; color:rgba(255,255,255,0.4);">Shared With Me</div>
+            </div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;">My Projects</div>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px;">
+                <div style="width:6px; height:6px; border-radius:50%; background:var(--teal); flex-shrink:0;"></div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.5);">Work</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px;">
+                <div style="width:6px; height:6px; border-radius:50%; background:var(--amber); flex-shrink:0;"></div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.5);">Personal</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px;">
+                <div style="width:6px; height:6px; border-radius:50%; background:var(--red-soft); flex-shrink:0;"></div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.5);">School</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main content -->
+          <div style="padding:24px; background:#1e1e2e;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+              <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:white;">My Tasks</div>
+              <div style="display:flex; gap:8px;">
+                <div style="padding:7px 14px; background:rgba(255,255,255,0.06); border-radius:4px; font-size:11px; color:rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.06);">Filter</div>
+                <div style="padding:7px 16px; background:var(--teal); border-radius:4px; font-size:11px; color:white; font-weight:600;">+ Create Task</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:20px 1fr 90px 70px; gap:12px; font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:2px; text-transform:uppercase; padding:0 4px; margin-bottom:8px;">
+              <div></div><div>TITLE</div><div>DUE</div><div>PRIORITY</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <div style="display:grid; grid-template-columns:20px 1fr 90px 70px; gap:12px; align-items:center; padding:12px; background:rgba(255,255,255,0.04); border-radius:4px; cursor:pointer;">
+                <div style="width:14px; height:14px; border:1.5px solid rgba(255,255,255,0.2); border-radius:3px;"></div>
+                <div style="font-size:13px; color:rgba(255,255,255,0.85);">Submit project proposal</div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.3);">Dec 15</div>
+                <div style="padding:3px 8px; background:rgba(194,92,75,0.2); border-radius:8px; font-size:10px; color:var(--red-soft); text-align:center;">High</div>
+              </div>
+              <div style="display:grid; grid-template-columns:20px 1fr 90px 70px; gap:12px; align-items:center; padding:12px; background:rgba(42,107,107,0.1); border-radius:4px; border:1px solid rgba(42,107,107,0.2);">
+                <div style="width:14px; height:14px; border:1.5px solid var(--teal); border-radius:3px; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:10px; color:white; font-weight:700;">✓</div>
+                <div style="font-size:13px; color:rgba(255,255,255,0.3); text-decoration:line-through;">Buy groceries</div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.2);">Dec 10</div>
+                <div style="padding:3px 8px; background:rgba(255,255,255,0.05); border-radius:8px; font-size:10px; color:rgba(255,255,255,0.25); text-align:center;">Low</div>
+              </div>
+              <div style="display:grid; grid-template-columns:20px 1fr 90px 70px; gap:12px; align-items:center; padding:12px; background:rgba(255,255,255,0.04); border-radius:4px;">
+                <div style="width:14px; height:14px; border:1.5px solid rgba(255,255,255,0.2); border-radius:3px;"></div>
+                <div style="font-size:13px; color:rgba(255,255,255,0.85);">Call the dentist</div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.3);">Dec 18</div>
+                <div style="padding:3px 8px; background:rgba(196,124,43,0.2); border-radius:8px; font-size:10px; color:var(--amber); text-align:center;">Med</div>
+              </div>
+              <div style="display:grid; grid-template-columns:20px 1fr 90px 70px; gap:12px; align-items:center; padding:12px; background:rgba(255,255,255,0.04); border-radius:4px;">
+                <div style="width:14px; height:14px; border:1.5px solid rgba(255,255,255,0.2); border-radius:3px;"></div>
+                <div style="font-size:13px; color:rgba(255,255,255,0.85);">Review sprint backlog</div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.3);">Dec 20</div>
+                <div style="padding:3px 8px; background:rgba(42,107,107,0.2); border-radius:8px; font-size:10px; color:var(--teal-light); text-align:center;">Low</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right panel — task details -->
+          <div style="background:#1a1a2a; padding:20px; border-left:1px solid rgba(255,255,255,0.05);">
+            <div style="font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px;">TASK DETAILS</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.3); letter-spacing:1px; margin-bottom:6px;">TITLE</div>
+            <div style="height:30px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:4px; margin-bottom:14px; display:flex; align-items:center; padding:0 10px; font-size:12px; color:rgba(255,255,255,0.7);">Submit project proposal</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.3); letter-spacing:1px; margin-bottom:6px;">DESCRIPTION</div>
+            <div style="height:56px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:4px; margin-bottom:14px;"></div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.3); letter-spacing:1px; margin-bottom:6px;">DUE DATE</div>
+            <div style="height:30px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:4px; margin-bottom:14px; display:flex; align-items:center; padding:0 10px; font-size:12px; color:rgba(255,255,255,0.5);">Dec 15, 2024</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.3); letter-spacing:1px; margin-bottom:8px;">PRIORITY</div>
+            <div style="display:flex; gap:4px; margin-bottom:20px;">
+              <div style="flex:1; padding:6px 4px; background:rgba(194,92,75,0.3); border:1px solid var(--red-soft); border-radius:4px; text-align:center; font-size:9px; color:var(--red-soft);">HIGH</div>
+              <div style="flex:1; padding:6px 4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:4px; text-align:center; font-size:9px; color:rgba(255,255,255,0.3);">MED</div>
+              <div style="flex:1; padding:6px 4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:4px; text-align:center; font-size:9px; color:rgba(255,255,255,0.3);">LOW</div>
+            </div>
+            <div style="height:34px; background:var(--teal); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:12px; color:white; font-weight:600; letter-spacing:0.5px;">Save Changes</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:20px; font-family:'JetBrains Mono',monospace; font-size:10px; color:rgba(245,240,232,0.3); letter-spacing:2px;">
+        Figma Hi-Fi Prototype — Built in Figma · React + Tailwind implementation
+      </div>
+      <div class="links-row" style="justify-content:center; margin-top:20px;">
+        <a class="link-chip dark" href="https://www.figma.com/proto/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=840-4332&starting-point-node-id=840%3A4332&t=u3Fg35FUxNquK67E-1" target="_blank" rel="noopener">
+          <span class="chip-icon">▶</span> Open Interactive Prototype
+        </a>
+        <a class="link-chip dark" href="https://www.figma.com/design/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=0-1&t=XQBOELElZ7PzIHcD-0" target="_blank" rel="noopener">
+          <span class="chip-icon">◈</span> Explore Full Design File
+        </a>
+        <a class="link-chip dark" href="https://moxie.cs.oswego.edu:49000/login" target="_blank" rel="noopener">
+          <span class="chip-icon">⚡</span> View Live App
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ════════════════════════════════════════════
+     DESIGN DECISIONS
+════════════════════════════════════════════ -->
+<section id="design-dec">
+  <div class="section-num">06 — Design Decisions</div>
+  <h2>Every choice had <em>a reason.</em></h2>
+
+  <div class="decisions-intro reveal">
+    <div>
+      <p style="margin-bottom:20px;">Spanning requirements, research, and design gave me a rare vantage point — I could trace every pixel back to a user insight or a documented requirement. These are the decisions that defined CheckMate's character.</p>
+      <p>These are the decisions that shaped the product.</p>
+    </div>
+    <div style="padding:32px; background:var(--cream2); border:1px solid var(--border);">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--warm-light); margin-bottom:16px;">Design Stack</div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; justify-content:space-between; font-size:14px;">
+          <span style="color:var(--ink2); font-weight:500;">Figma</span>
+          <span style="color:var(--warm-mid);">Wireframes + Prototype</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:14px;">
+          <span style="color:var(--ink2); font-weight:500;">FigJam</span>
+          <span style="color:var(--warm-mid);">Paper wireframe ideation</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:14px;">
+          <span style="color:var(--ink2); font-weight:500;">Miro</span>
+          <span style="color:var(--warm-mid);">Affinity diagrams + sprint board</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:14px;">
+          <span style="color:var(--ink2); font-weight:500;">WebAIM</span>
+          <span style="color:var(--warm-mid);">Contrast ratio validation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-big-row reveal">
+    <div class="decision-card teal">
+      <div class="dc-tag">IA Decision</div>
+      <div class="dc-title">One task per view. Multiple lists, separate pages.</div>
+      <div class="dc-body">The client was explicit: one list per page, but the ability to navigate to others. This became the foundational IA decision — a persistent left panel for navigation between "Projects," a main content area for the active list, and a right panel for task details. Nothing competes for attention. Everything has a lane.</div>
+      <div class="dc-impact" style="color:rgba(245,240,232,0.7);">Aligns with "simplified and clean" client mandate. Prevents cognitive overload.</div>
+    </div>
+    <div class="decision-card">
+      <div class="dc-tag t">Navigation Decision</div>
+      <div class="dc-title">Three-panel layout: stable, contextual, and focused</div>
+      <div class="dc-body">Left panel: persistent navigation (My Tasks, Recently Deleted, My Projects, Shared With Me). Center: active list. Right: task details panel. This pattern mirrors productivity tools users already know (Notion, Todoist) while maintaining our own visual identity — reducing learning curve without looking derivative.</div>
+      <div class="dc-impact" style="color:var(--teal);">Reduced navigation errors in usability testing vs. earlier iterations.</div>
+    </div>
+  </div>
+
+  <div class="decision-big-row reveal" style="margin-top:2px;">
+    <div class="decision-card">
+      <div class="dc-tag a">Scope Decision</div>
+      <div class="dc-title">Removed subtasks and tags in high-fidelity</div>
+      <div class="dc-body">The low-fidelity prototype included subtasks and tags. Usability testing and time constraints revealed they added complexity without adding clarity for our target user ("Mom, Dad, everyday person"). I led the decision to remove them from the high-fidelity prototype — a hard call that sharpened the product. Features exist to serve users, not to impress reviewers.</div>
+      <div class="dc-impact" style="color:var(--teal);">Cleaner task creation flow. Faster time-to-first-task for new users.</div>
+    </div>
+    <div class="decision-card dark">
+      <div class="dc-tag">Interaction Decision</div>
+      <div class="dc-title">Delete confirmation popup + soft-delete recovery</div>
+      <div class="dc-body">Deleting a task is irreversible in most apps. We added two layers: a confirmation popup on delete, and a "Recently Deleted" page with task recovery. This was born from a usability interview insight — users frequently expressed anxiety about losing tasks by mistake. The design directly answers an observed fear, not an assumed one.</div>
+      <div class="dc-impact" style="color:var(--teal-light);">Users explicitly praised this in post-test interviews. Zero accidental data loss.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     ACCESSIBILITY
+════════════════════════════════════════════ -->
+<section class="a11y-section">
+  <div class="section-num">07 — Accessibility</div>
+  <h2>WCAG 2.1 wasn't a checkbox. <em>It was a constraint we designed within.</em></h2>
+
+  <div class="a11y-grid reveal">
+    <div class="a11y-card">
+      <div class="a11y-icon">🎨</div>
+      <h3>Color & Contrast</h3>
+      <p style="margin-bottom:12px;">Every text-background pairing validated using WebAIM. Designed to pass WCAG AAA — not just AA. The client mentioned considering "eyesight and distractions" in interview 1; this became a design constraint, not a recommendation.</p>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--teal); margin-top:16px;">WebAIM validated · WCAG AAA target</div>
+    </div>
+    <div class="a11y-card">
+      <div class="a11y-icon">🔤</div>
+      <h3>Typography: Inter at 14pt</h3>
+      <p style="margin-bottom:12px;">Selected Inter typeface: sans-serif, tall x-height, highly legible at small sizes. Set minimum text size to 14pt — 2 points above the WCAG 12pt requirement. A deliberate buffer, not the minimum bar. Spacing and line-height optimized for comfortable reading, not maximum density.</p>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--teal); margin-top:16px;">Inter · 14pt minimum · Optimized line-height</div>
+    </div>
+    <div class="a11y-card">
+      <div class="a11y-icon">👆</div>
+      <h3>Signifiers & Interaction</h3>
+      <p style="margin-bottom:12px;">Multiple signifier types used consistently: icons denote element types, buttons use contrasting colors with hover states, proximity groups related items. Keyboard navigation designed in from the start. Labels are descriptive, not decorative — every interactive element communicates its function.</p>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--teal); margin-top:16px;">Icons · Hover states · Keyboard nav · ARIA labels</div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ════════════════════════════════════════════
+     RESEARCH + TESTING
+════════════════════════════════════════════ -->
+<section class="artifacts-section" id="research">
+  <div class="section-num">08 — Research & Usability Testing</div>
+  <h2>We tested what we <em>built,</em> not what we imagined.</h2>
+  <p style="color:rgba(245,240,232,0.5); max-width:600px; margin-top:12px; margin-bottom:0;">Planned a formal IRB study with 11 participants. Adapted to pragmatic informal testing due to time constraints — without compromising on the rigor of what we observed.</p>
+
+  <div class="artifacts-grid reveal">
+    <div class="artifact-item">
+      <div class="ai-header">
+        <div class="ai-title">Interview Protocol — 3 Phases</div>
+        <div class="ai-tag">Qualitative</div>
+      </div>
+      <div class="interview-qs">
+        <div class="iq"><strong style="color:rgba(245,240,232,0.7);">Warm-up:</strong> Work context, daily life, apps used</div>
+        <div class="iq"><strong style="color:rgba(245,240,232,0.7);">Focus:</strong> To-do list habits, pain points, workarounds</div>
+        <div class="iq"><strong style="color:rgba(245,240,232,0.7);">Usability tasks:</strong> Create account → Create list → Modify/delete/recover tasks</div>
+        <div class="iq"><strong style="color:rgba(245,240,232,0.7);">Post-test:</strong> Ease rating (1–10), challenges, improvements</div>
+      </div>
+    </div>
+
+    <div class="artifact-item">
+      <div class="ai-header">
+        <div class="ai-title">Observation Metrics</div>
+        <div class="ai-tag">Quantitative</div>
+      </div>
+      <div class="interview-qs">
+        <div class="iq">Time taken to complete each task</div>
+        <div class="iq">Number of errors or challenges per task</div>
+        <div class="iq">Screens visited per task</div>
+        <div class="iq">Participant satisfaction score (post-test)</div>
+        <div class="iq">User reactions (facial, verbal) logged in observation log</div>
+      </div>
+    </div>
+
+    <div class="artifact-item wide">
+      <div class="ai-header">
+        <div class="ai-title">What the Think-Aloud Sessions Revealed</div>
+        <div class="ai-tag">Synthesis · Affinity Mapping</div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:24px;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal-light); margin-bottom:10px;">Finding A</div>
+          <div style="color:rgba(245,240,232,0.8); font-size:14px; line-height:1.6;">"Create project" and task deletion buttons weren't prominent enough. Users looked in wrong places.</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal-light); margin-bottom:10px;">Finding B</div>
+          <div style="color:rgba(245,240,232,0.8); font-size:14px; line-height:1.6;">Users confused "projects" vs. "tasks" hierarchy. The mental model needed clearer spatial separation.</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal-light); margin-bottom:10px;">Finding C</div>
+          <div style="color:rgba(245,240,232,0.8); font-size:14px; line-height:1.6;">Users expected inline task editing directly in list view. The side panel wasn't discoverable enough.</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal-light); margin-bottom:10px;">Finding D</div>
+          <div style="color:rgba(245,240,232,0.8); font-size:14px; line-height:1.6;">Calendar/date picker behavior broke workflow. Users expected click-out to dismiss, not a separate close action.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PAIN POINTS
+════════════════════════════════════════════ -->
+<section class="pain-section">
+  <div class="section-num">09 — Usability Pain Points</div>
+  <h2>What we <em>fixed,</em> and what we documented for next.</h2>
+
+  <div class="pain-grid reveal">
+    <div class="pain-card">
+      <div class="pain-num">01</div>
+      <div class="pain-content">
+        <div class="pain-title">Project Management Discoverability</div>
+        <div class="pain-desc">Create project and task deletion buttons were not prominent. Users scanned the interface without finding them. Fix: Increased visual weight of primary action buttons. Added "Create New Task" consistently in both the homepage and project views.</div>
+      </div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-num">02</div>
+      <div class="pain-content">
+        <div class="pain-title">Projects vs. Tasks Hierarchy Confusion</div>
+        <div class="pain-desc">Users unsure whether to create a "Project" first or a "Task" first. Fix: Added inline instructional text on first-time views: "Create a project first, then add tasks to it." Progressive disclosure instead of expecting users to figure out the hierarchy on their own.</div>
+      </div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-num">03</div>
+      <div class="pain-content">
+        <div class="pain-title">Task Editing — Missing Signifiers</div>
+        <div class="pain-desc">Users expected to click a task and edit it directly in the list. The right-panel interaction wasn't surfacing correctly. Fix: Added edit icon to the task details panel header, added hover highlight on tasks to signal interactivity. Both solutions logged as sprint backlog items.</div>
+      </div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-num">04</div>
+      <div class="pain-content">
+        <div class="pain-title">Menu & Calendar Dismiss Behavior</div>
+        <div class="pain-desc">Calendar date picker didn't dismiss on outside click — a standard interaction pattern users expected. Menus didn't always close intuitively. Fix: Implemented click-outside dismiss for all floating elements. Documented as a QA test case for all future builds.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ════════════════════════════════════════════
+     DESIGN HANDOFF
+════════════════════════════════════════════ -->
+<section class="handoff-section">
+  <div class="section-num">10 — Design Handoff & Documentation</div>
+  <h2>The work doesn't end <em>at delivery.</em></h2>
+  <p style="color:rgba(245,240,232,0.6); max-width:600px; margin-top:12px;">A product is only as good as the documentation that surrounds it. I treat every handoff artifact as a design decision — unclear documentation is a usability failure before the user even opens the app.</p>
+
+  <div class="handoff-grid reveal">
+    <div class="handoff-card">
+      <div class="hc-icon">📋</div>
+      <div class="hc-title">IEEE 29148 SRS Document</div>
+      <div class="hc-desc">Full software requirements specification. Covered product perspective, user interfaces, functional requirements, system interfaces, security, and scope boundaries. Version-controlled through 2.1 across 7 sprints. Every team referenced it as the ground truth.</div>
+      <div class="links-row" style="margin-top:16px;">
+        <a class="link-chip" href="https://docs.google.com/document/d/12R4Os32mwC-Z_mf2vRKDYGAMDoETlb9WyL_Qd3IIKbE/edit?usp=sharing" target="_blank" rel="noopener" style="font-size:10px; padding:6px 12px;">
+          <span class="chip-icon">📋</span> Read SRS Document
+        </a>
+      </div>
+    </div>
+    <div class="handoff-card">
+      <div class="hc-icon">📖</div>
+      <div class="hc-title">User Manual (2 versions)</div>
+      <div class="hc-desc">An early working draft (HCI 521 internal) and a final polished manual. Covered account creation, login, project creation, task CRUD, sorting/filtering, sharing, FAQ, and glossary. Wrote it as a user-first document — every instruction written as if the reader had never seen the app.</div>
+      <div class="links-row" style="margin-top:16px;">
+        <a class="link-chip" href="https://docs.google.com/document/d/11B28y6oOiERerFPX_XxYENGVtfmS9Hh0Rd-VsAGmaLA/edit?tab=t.0" target="_blank" rel="noopener" style="font-size:10px; padding:6px 12px;">
+          <span class="chip-icon">📖</span> Read User Manual
+        </a>
+      </div>
+    </div>
+    <div class="handoff-card">
+      <div class="hc-icon">🗺️</div>
+      <div class="hc-title">Sitemap & User Flow Diagrams</div>
+      <div class="hc-desc">Hierarchical sitemap showing every page and navigation path. UML Activity and Sequence diagrams for core flows (Create Account, Login, Task Management). Used by both GUI for layout and Engine for API design — one artifact, two teams aligned.</div>
+    </div>
+    <div class="handoff-card">
+      <div class="hc-icon">🧪</div>
+      <div class="hc-title">Usability Testing Plan</div>
+      <div class="hc-desc">Three-phase interview guide, observation log with defined metrics (task time, error count, screens visited), post-test follow-up questions, and a post-test analysis framework. Written to be repeatable by any future researcher on the team.</div>
+      <div class="links-row" style="margin-top:16px;">
+        <a class="link-chip" href="https://docs.google.com/document/d/1i-fUfkOxltjOwh3GldsWsaHDKplJdekDR866CqMVcRQ/edit?usp=sharing" target="_blank" rel="noopener" style="font-size:10px; padding:6px 12px;">
+          <span class="chip-icon">🧪</span> Read Testing Plan
+        </a>
+      </div>
+    </div>
+    <div class="handoff-card">
+      <div class="hc-icon">🗂️</div>
+      <div class="hc-title">Affinity Diagrams + Sprint Board</div>
+      <div class="hc-desc">Usability findings synthesized into affinity diagrams in Miro. Pain points categorized, prioritized, and fed back into sprint backlog items. Sprint retrospectives documented commitments and follow-ups — a living record of how the team improved over 7 iterations.</div>
+      <div class="links-row" style="margin-top:16px;">
+        <a class="link-chip" href="https://miro.com/app/board/uXjVGRcogQ8=/?share_link_id=355018804960" target="_blank" rel="noopener" style="font-size:10px; padding:6px 12px;">
+          <span class="chip-icon">🗂</span> Affinity Diagrams
+        </a>
+        <a class="link-chip" href="https://miro.com/app/board/uXjVKlwPhX8=/?share_link_id=482308476952" target="_blank" rel="noopener" style="font-size:10px; padding:6px 12px;">
+          <span class="chip-icon">🗂</span> Sprint Board
+        </a>
+      </div>
+    </div>
+    <div class="handoff-card">
+      <div class="hc-icon">🔒</div>
+      <div class="hc-title">Accessibility Documentation</div>
+      <div class="hc-desc">Documented color contrast ratios, WCAG target levels (AAA), typeface choices and size rationale, signifier types used, and keyboard navigation requirements. Gave the GUI team clear implementation criteria — not just "make it accessible" but exactly how to measure that it is.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SPRINT BREAKDOWN
+════════════════════════════════════════════ -->
+<section class="sprint-section">
+  <div class="section-num">11 — Sprint Collaboration Map</div>
+  <h2>Who did what, <em>when, and together.</em></h2>
+  <p style="margin-top:12px; max-width:640px;">Agile only works when teams actually talk. This is a snapshot of cross-team contributions across key sprints — showing how requirements, design, and engineering decisions were made collaboratively, not in sequence.</p>
+
+  <table class="sprint-table reveal">
+    <thead>
+      <tr>
+        <th>Sprint</th>
+        <th>Requirements (Me)</th>
+        <th>GUI Collaboration</th>
+        <th>Engine / QA</th>
+        <th>Deliverable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sprint 1–2</td>
+        <td>Conducted stakeholder interviews. Drafted initial SRS (v1.0). Defined inclusion/exclusion criteria for features.</td>
+        <td>Reviewed requirements for UI feasibility. Asked clarifying questions on shared lists scope.</td>
+        <td>Identified backend constraints (OpenLiberty, SQLite). Flagged JWT as security requirement.</td>
+        <td><span class="sprint-badge sb-req">SRS v1.0</span><span class="sprint-badge sb-gui">Sitemap</span></td>
+      </tr>
+      <tr>
+        <td>Sprint 3–4</td>
+        <td>Updated SRS based on team feedback. Drafted usability testing plan. Began early user manual structure.</td>
+        <td>Paper wireframes → digital wireframes. Consulted Requirements on IA decisions (panel layout).</td>
+        <td>Database schema designed. First build unstable — QA began logging issues in Miro.</td>
+        <td><span class="sprint-badge sb-req">SRS v2.0</span><span class="sprint-badge sb-gui">Wireframes</span><span class="sprint-badge sb-use">Test Plan</span></td>
+      </tr>
+      <tr>
+        <td>Sprint 5</td>
+        <td>Cross-team meeting to align on feature scope. Removed subtasks/tags from scope. Updated requirements backlog.</td>
+        <td>High-fidelity prototype started. Removed subtasks per requirements decision. Added delete confirmation popup.</td>
+        <td>Critical functionality still in progress. QA shifted focus to bug documentation, shared with all teams.</td>
+        <td><span class="sprint-badge sb-gui">Hi-Fi Prototype</span><span class="sprint-badge sb-use">Scope Change</span></td>
+      </tr>
+      <tr>
+        <td>Sprint 6</td>
+        <td>Informal usability testing conducted. Affinity diagrams built. Pain points documented and prioritized.</td>
+        <td>Iterated prototype based on usability findings. Improved signifiers, hover states, panel behavior.</td>
+        <td>Core functionality implemented. QA Selenium automation tests written. Bugs triaged with dev team.</td>
+        <td><span class="sprint-badge sb-use">Affinity Map</span><span class="sprint-badge sb-eng">Automation Tests</span></td>
+      </tr>
+      <tr>
+        <td>Sprint 7</td>
+        <td>Finalized SRS v2.1. Polished User Manual. Prepared case study documentation and presentation.</td>
+        <td>Final mockups and prototype ready. Animations and interactivity polished for demo.</td>
+        <td>Final QA pass. Docker deployment. Security review (prepared statements + JWT confirmed).</td>
+        <td><span class="sprint-badge sb-req">SRS v2.1</span><span class="sprint-badge sb-req">User Manual</span><span class="sprint-badge sb-gui">Final Prototype</span><span class="sprint-badge sb-eng">Shipped Product</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="links-row reveal" style="margin-top:32px;">
+    <a class="link-chip" href="https://github.com/PavlAvstin/OZ-CSC-480-HCI-521-Fall-2024" target="_blank" rel="noopener">
+      <span class="chip-icon">⌥</span> GitHub Repository
+    </a>
+    <a class="link-chip" href="https://miro.com/app/board/uXjVKlwPhX8=/?share_link_id=482308476952" target="_blank" rel="noopener">
+      <span class="chip-icon">🗂</span> Sprint Board on Miro
+    </a>
+    <a class="link-chip" href="https://miro.com/app/board/uXjVGRcogQ8=/?share_link_id=355018804960" target="_blank" rel="noopener">
+      <span class="chip-icon">🗂</span> Affinity Diagrams
+    </a>
+    <a class="link-chip" href="http://drive.google.com/file/d/1NdNYq6aMq0nwHhSzgVGUxuVjtuejfbjm/view" target="_blank" rel="noopener">
+      <span class="chip-icon">▶</span> QA Test Demo Video
+    </a>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ════════════════════════════════════════════
+     OUTCOMES
+════════════════════════════════════════════ -->
+<section class="outcome-section" id="outcomes">
+  <div class="section-num">12 — What We Shipped</div>
+  <h2>A product. A system.<br><em>A team that could work.</em></h2>
+
+  <div class="links-row reveal" style="margin-bottom:8px;">
+    <a class="link-chip ink" href="https://moxie.cs.oswego.edu:49000/login" target="_blank" rel="noopener">
+      <span class="chip-icon">⚡</span> Try the Live App
+    </a>
+    <a class="link-chip" href="https://www.figma.com/proto/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=840-4332&starting-point-node-id=840%3A4332&t=u3Fg35FUxNquK67E-1" target="_blank" rel="noopener">
+      <span class="chip-icon">▶</span> Open Interactive Prototype
+    </a>
+    <a class="link-chip" href="https://github.com/PavlAvstin/OZ-CSC-480-HCI-521-Fall-2024" target="_blank" rel="noopener">
+      <span class="chip-icon">⌥</span> View Source Code
+    </a>
+  </div>
+
+  <div class="outcome-cols reveal">
+    <div>
+      <h3 style="margin-bottom:24px; color:var(--teal);">Core Features Shipped</h3>
+      <div class="outcome-list">
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>GitHub SSO + email/password authentication</strong> — Secure login with JWT tokens, SQLite persistence</div>
+        </div>
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>Multi-project task management</strong> — Create, edit, delete tasks within organized projects</div>
+        </div>
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>Priority levels + due dates</strong> — Low/Medium/High priority, calendar date picker</div>
+        </div>
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>Soft-delete + recovery</strong> — Recently Deleted page with task restoration</div>
+        </div>
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>Shared task lists</strong> — "Shared With Me" page, task sharing between users</div>
+        </div>
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>In-app notifications</strong> — Time-sensitive task alerts on login</div>
+        </div>
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>Sort and filter</strong> — By priority, due date, or both</div>
+        </div>
+        <div class="ol-item">
+          <div class="ol-check">✓</div>
+          <div class="ol-text"><strong>WCAG AAA accessibility</strong> — Contrast-validated, keyboard-navigable, 14pt minimum type</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:24px; color:var(--teal);">What This Sprint Built in Me</h3>
+
+      <div style="padding:32px; background:var(--teal-pale); margin-bottom:24px;">
+        <p style="color:var(--ink2); font-size:15px; line-height:1.75;">Spanning Requirements, Usability, and Design simultaneously taught me what "product thinking" actually means — it's not about owning a lane, it's about holding the whole user journey in your head while the people around you each hold a piece of it.</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="padding:20px; border:1px solid var(--border); background:var(--cream);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal); margin-bottom:6px;">Skill Built</div>
+          <div style="font-size:14px; color:var(--ink2); font-weight:500;">Cross-functional communication without losing clarity</div>
+        </div>
+        <div style="padding:20px; border:1px solid var(--border); background:var(--cream);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal); margin-bottom:6px;">Skill Built</div>
+          <div style="font-size:14px; color:var(--ink2); font-weight:500;">Treating documentation as a design artifact, not an afterthought</div>
+        </div>
+        <div style="padding:20px; border:1px solid var(--border); background:var(--cream);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal); margin-bottom:6px;">Skill Built</div>
+          <div style="font-size:14px; color:var(--ink2); font-weight:500;">Making scope decisions that protect simplicity under pressure</div>
+        </div>
+        <div style="padding:20px; border:1px solid var(--border); background:var(--cream);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--teal); margin-bottom:6px;">Skill Built</div>
+          <div style="font-size:14px; color:var(--ink2); font-weight:500;">Agile iteration — updating requirements when the world changes, not freezing them</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     LESSONS
+════════════════════════════════════════════ -->
+<section class="lessons-section">
+  <div class="section-num">13 — Lessons</div>
+  <h2>What we'd <em>do differently.</em></h2>
+
+  <div class="lessons-grid reveal">
+    <div class="lesson-card">
+      <div>
+        <div class="lc-q">"</div>
+        <div class="lc-text">The most important skill in a cross-functional team isn't your craft. It's knowing when to speak, when to listen, and how to translate between languages — between what designers say and what engineers hear, between what clients ask for and what users need.</div>
+      </div>
+      <div class="lc-attr">Requirements · Usability · Design Lead</div>
+    </div>
+    <div class="lesson-card">
+      <div class="lc-text">Direct, concise requirements prevent redundant meetings. Verbosity in documentation is a cost paid by every person who reads it — write for the reader, not the reviewer.</div>
+      <div class="lc-attr">Requirements Lesson</div>
+    </div>
+    <div class="lesson-card">
+      <div class="lc-text">Cross-team communication should be scheduled, not assumed. We committed to at least one joint meeting per sprint. When we kept that commitment, velocity improved. When we didn't, surprises happened at demo time.</div>
+      <div class="lc-attr">Collaboration Lesson</div>
+    </div>
+    <div class="lesson-card">
+      <div class="lc-text">Plan the IRB study earlier. We had the rigor but not the runway. An 11-participant formal study would have given us richer data — we adapted well, but adapted less is still less.</div>
+      <div class="lc-attr">Research Lesson</div>
+    </div>
+    <div class="lesson-card">
+      <div class="lc-text">QA integration shouldn't wait for stable builds. Shifting test planning left — earlier in the sprint — means bugs found earlier are bugs fixed cheaper. We learned this the hard way in Sprint 5.</div>
+      <div class="lc-attr">Process Lesson</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     NEXT STEPS
+════════════════════════════════════════════ -->
+<section class="nextsteps-section">
+  <div class="section-num">14 — What's Next</div>
+  <h2>Version 1 is the <em>beginning.</em></h2>
+
+  <div class="ns-grid reveal">
+    <div class="ns-card">
+      <div class="ns-n">01</div>
+      <div class="ns-title">Additional Social Logins</div>
+      <div class="ns-desc">GitHub SSO shipped. Apple and Google sign-in are the next authentication paths — reaching users who don't have GitHub accounts (which is most of our target "everyday person" audience).</div>
+    </div>
+    <div class="ns-card">
+      <div class="ns-n">02</div>
+      <div class="ns-title">Task Duplication, Repetition & Search</div>
+      <div class="ns-desc">Power users with many tasks need duplication (copy a task), recurring tasks, and a search bar. These features were intentionally scoped out of v1 to protect simplicity — they're the right v2 priority.</div>
+    </div>
+    <div class="ns-card">
+      <div class="ns-n">03</div>
+      <div class="ns-title">Automatic Database Migration</div>
+      <div class="ns-desc">As the schema evolves, automated migration prevents manual intervention during updates. A technical next step that enables faster design iteration without breaking existing user data.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     CLOSING
+════════════════════════════════════════════ -->
+<section class="closing">
+  <div class="section-num" style="justify-content:center; margin-bottom:20px;">End of Case Study</div>
+  <h2>Designing <em>CheckMate</em> taught me<br>that clarity is a feature.</h2>
+  <p class="closing-sub">In a market of overbuilt task apps, saying "no" to complexity was the hardest — and most important — design decision we made. That discipline came from understanding the user before touching Figma.</p>
+
+  <div class="researcher-card reveal">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--warm-light); margin-bottom:24px;">All Project Links</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:40px; text-align:left;">
+      <a class="link-chip ink" href="https://www.figma.com/proto/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=840-4332&starting-point-node-id=840%3A4332&t=u3Fg35FUxNquK67E-1" target="_blank" rel="noopener">
+        <span class="chip-icon">▶</span> Hi-Fi Prototype
+      </a>
+      <a class="link-chip ink" href="https://www.figma.com/design/W774lSGq4gQoIVCJtCOxg8/To-Do-List-Usability-Prototype?node-id=0-1&t=XQBOELElZ7PzIHcD-0" target="_blank" rel="noopener">
+        <span class="chip-icon">◈</span> Figma Design File
+      </a>
+      <a class="link-chip ink" href="https://www.figma.com/board/LKr1Mf6yCC5WPvgfSb5AuZ/Planning?node-id=0-1&t=HbVVpaVx5EFYIzQP-1" target="_blank" rel="noopener">
+        <span class="chip-icon">✏</span> FigJam Sketches
+      </a>
+      <a class="link-chip ink" href="https://moxie.cs.oswego.edu:49000/login" target="_blank" rel="noopener">
+        <span class="chip-icon">⚡</span> Live Application
+      </a>
+      <a class="link-chip ink" href="https://github.com/PavlAvstin/OZ-CSC-480-HCI-521-Fall-2024" target="_blank" rel="noopener">
+        <span class="chip-icon">⌥</span> GitHub Repository
+      </a>
+      <a class="link-chip ink" href="https://docs.google.com/document/d/12R4Os32mwC-Z_mf2vRKDYGAMDoETlb9WyL_Qd3IIKbE/edit?usp=sharing" target="_blank" rel="noopener">
+        <span class="chip-icon">📋</span> SRS IEEE Document
+      </a>
+      <a class="link-chip ink" href="https://docs.google.com/document/d/11B28y6oOiERerFPX_XxYENGVtfmS9Hh0Rd-VsAGmaLA/edit?tab=t.0" target="_blank" rel="noopener">
+        <span class="chip-icon">📖</span> User Manual
+      </a>
+      <a class="link-chip ink" href="https://docs.google.com/document/d/1i-fUfkOxltjOwh3GldsWsaHDKplJdekDR866CqMVcRQ/edit?usp=sharing" target="_blank" rel="noopener">
+        <span class="chip-icon">🧪</span> Testing Plan
+      </a>
+      <a class="link-chip ink" href="https://miro.com/app/board/uXjVGRcogQ8=/?share_link_id=355018804960" target="_blank" rel="noopener">
+        <span class="chip-icon">🗂</span> Affinity Diagrams
+      </a>
+      <a class="link-chip ink" href="https://miro.com/app/board/uXjVKlwPhX8=/?share_link_id=482308476952" target="_blank" rel="noopener">
+        <span class="chip-icon">🗂</span> Sprint Board
+      </a>
+      <a class="link-chip ink" href="https://miro.com/app/board/uXjVLB8rGkQ=/" target="_blank" rel="noopener">
+        <span class="chip-icon">🗂</span> Sprint Tracking
+      </a>
+      <a class="link-chip ink" href="http://drive.google.com/file/d/1NdNYq6aMq0nwHhSzgVGUxuVjtuejfbjm/view" target="_blank" rel="noopener">
+        <span class="chip-icon">▶</span> QA Demo Video
+      </a>
+    </div>
+    <div style="height:1px; background:var(--border); margin-bottom:32px;"></div>
+    <div class="rc-name">Prasanna Lakshmi Guduru</div>
+    <div class="rc-role">Product Designer · UX Researcher · M.A. Human-Computer Interaction · SUNY Oswego</div>
+    <div class="rc-tags">
+      <span class="rc-tag">Requirements Lead</span>
+      <span class="rc-tag">Usability Lead</span>
+      <span class="rc-tag">Design</span>
+      <span class="rc-tag">IBM Collaboration</span>
+      <span class="rc-tag">Agile / Scrum</span>
+      <span class="rc-tag">IEEE SRS</span>
+      <span class="rc-tag">Figma</span>
+      <span class="rc-tag">WCAG 2.1</span>
+    </div>
+  </div>
+
+  <div style="margin-top:80px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--warm-light); letter-spacing:2px;">
+    CHECKMATE · HCI 521 / CSC 480 · SUNY OSWEGO · FALL 2024
+  </div>
+</section>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('progress-bar').style.width = (scrolled / total * 100) + '%';
+});
+
+// Reveal animations
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal, .reveal-left').forEach(el => obs.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
